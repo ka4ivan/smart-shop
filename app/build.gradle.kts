@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.smartshop"
+    namespace = "com.example.smartshop"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.smartshop"
+        applicationId = "com.example.smartshop"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
