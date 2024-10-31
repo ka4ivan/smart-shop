@@ -4,39 +4,48 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.smartshop.databinding.FragmentNotificationsBinding
+import com.example.smartshop.R
+import androidx.appcompat.app.AppCompatDelegate
 
 class NotificationsFragment : Fragment() {
 
-    private var _binding: FragmentNotificationsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var themeSelector: Spinner
+    private lateinit var rootView: View
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(NotificationsViewModel::class.java)
+    ): View? {
+        rootView = inflater.inflate(R.layout.fragment_notifications, container, false)
 
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        themeSelector = rootView.findViewById(R.id.theme_selector)
 
-        val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        // Створюємо адаптер для Spinner
+        val themeOptions = arrayOf("Чорний", "Білий")
+        val adapter = ArrayAdapter(requireContext(), R.layout.spinner_item, themeOptions) // Використання кастомного layout
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) // Фон для випадаючого меню
+        themeSelector.adapter = adapter
+
+        // Обробник вибору теми
+        themeSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> applyTheme(AppCompatDelegate.MODE_NIGHT_YES) // Чорний
+                    1 -> applyTheme(AppCompatDelegate.MODE_NIGHT_NO) // Білий
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        return root
+
+        return rootView
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun applyTheme(themeMode: Int) {
+        AppCompatDelegate.setDefaultNightMode(themeMode)
     }
 }
