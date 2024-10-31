@@ -15,4 +15,8 @@
     <string name="lists_empty_title">Давайте сплануємо ваші покупки!</string>
     <string name="lists_empty_subtitle">Натисніть на плюс, щоб створити свій перший список</string>
 
+    <!--    Профіль     -->
+    <string name="black_theme">Чорний</string>
+    <string name="white_theme">Білий</string>
+
 </resources>
