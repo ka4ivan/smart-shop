@@ -4,6 +4,7 @@
     <string name="app_name">SmartShop</string>
     <string name="btn_add">Новий список</string>
     <string name="trash">Смітник</string>
+    <string name="hello">Привіт ✌️</string>
 
 <!--    Списки      -->
     <string name="title_lists">Списки</string>
@@ -16,5 +17,9 @@
     <string name="create">Створити</string>
     <string name="new_list">Новий список</string>
     <string name="suggestions">Пропозиції</string>
+
+    <!--    Профіль     -->
+    <string name="black_theme">Чорний</string>
+    <string name="white_theme">Білий</string>
 
 </resources>
