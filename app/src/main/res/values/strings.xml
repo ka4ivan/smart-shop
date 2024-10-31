@@ -13,5 +13,8 @@
 <!--    Головна     -->
     <string name="lists_empty_title">Давайте сплануємо ваші покупки!</string>
     <string name="lists_empty_subtitle">Натисніть на плюс, щоб створити свій перший список</string>
+    <string name="create">Створити</string>
+    <string name="new_list">Новий список</string>
+    <string name="suggestions">Пропозиції</string>
 
 </resources>

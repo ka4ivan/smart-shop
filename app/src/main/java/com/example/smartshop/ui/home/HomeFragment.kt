@@ -32,6 +32,12 @@ class HomeFragment : Fragment() {
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        binding.extendedFloatingActionButton.setOnClickListener {
+            val dialog = NewListDialogFragment()
+            dialog.show(parentFragmentManager, "NewListDialog")
+        }
+
         return root
     }
 
