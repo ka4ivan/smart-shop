@@ -4,6 +4,7 @@
     <string name="app_name">SmartShop</string>
     <string name="btn_add">Новий список</string>
     <string name="trash">Смітник</string>
+    <string name="hello">Привіт ✌️</string>
 
 <!--    Списки      -->
     <string name="title_lists">Списки</string>
