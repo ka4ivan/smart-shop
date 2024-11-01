@@ -17,7 +17,9 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="100dp"
             android:layout_marginEnd="8dp"
+            android:text="@string/hello"
             android:textAlignment="center"
+            android:textColor="@color/text"
             android:textSize="20sp" />
 
         <Spinner
@@ -27,9 +29,9 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginTop="200dp"
-            android:background="@drawable/spinner_background"
+            android:background="@color/white"
             android:padding="12dp"
-            android:popupBackground="@drawable/spinner_dropdown_background" />
+            android:popupBackground="@color/white" />
 
         <!-- Додаємо LinearLayout для текстових елементів -->
         <LinearLayout

@@ -1,5 +1,6 @@
 package com.example.smartshop.ui.notifications
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,21 +22,26 @@ class NotificationsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         rootView = inflater.inflate(R.layout.fragment_notifications, container, false)
-
         themeSelector = rootView.findViewById(R.id.theme_selector)
 
+        // Завантаження збереженої теми при створенні фрагмента
+        loadThemePreference()
+
         // Створюємо адаптер для Spinner
-        val themeOptions = arrayOf("Чорний", "Білий")
-        val adapter = ArrayAdapter(requireContext(), R.layout.spinner_item, themeOptions) // Використання кастомного layout
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) // Фон для випадаючого меню
+        val themeOptions = arrayOf("Темна", "Світла")
+        val adapter = ArrayAdapter(requireContext(), R.layout.spinner_item, themeOptions)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         themeSelector.adapter = adapter
+
+        // Встановлення початкового вибору відповідно до збереженої теми
+        themeSelector.setSelection(if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) 0 else 1)
 
         // Обробник вибору теми
         themeSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when (position) {
-                    0 -> applyTheme(AppCompatDelegate.MODE_NIGHT_YES) // Чорний
-                    1 -> applyTheme(AppCompatDelegate.MODE_NIGHT_NO) // Білий
+                val themeMode = if (position == 0) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                if (AppCompatDelegate.getDefaultNightMode() != themeMode) {
+                    applyTheme(themeMode)
                 }
             }
 
@@ -47,5 +53,17 @@ class NotificationsFragment : Fragment() {
 
     private fun applyTheme(themeMode: Int) {
         AppCompatDelegate.setDefaultNightMode(themeMode)
+        saveThemePreference(themeMode)
+    }
+
+    private fun saveThemePreference(themeMode: Int) {
+        val prefs = requireContext().getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        prefs.edit().putInt("theme_mode", themeMode).apply()
+    }
+
+    private fun loadThemePreference() {
+        val prefs = requireContext().getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        val savedThemeMode = prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_NO)
+        AppCompatDelegate.setDefaultNightMode(savedThemeMode)
     }
 }

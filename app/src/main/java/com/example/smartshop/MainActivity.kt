@@ -1,51 +1,27 @@
 package com.example.smartshop
 
-import android.os.Bundle
 import android.content.Context
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.smartshop.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private var isDarkTheme = false
-
-    private fun toggleTheme() {
-        if (isDarkTheme) {
-            setTheme(R.style.AppTheme_Light) // Світла тема
-        } else {
-            setTheme(R.style.AppTheme_Dark) // Темна тема
-        }
-        recreate() // Перезавантажте активність для застосування нової теми
-        isDarkTheme = !isDarkTheme // Перемикаємо прапорець теми
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Отримати збережену тему
-        val sharedPref = getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
-        val currentTheme = sharedPref.getString("theme", "Білий") // "Білий" за замовчуванням
-
-        // Встановіть тему перед викликом super.onCreate()
-        setTheme(if (currentTheme == "Чорний") R.style.AppTheme_Dark else R.style.AppTheme_Light)
-
         super.onCreate(savedInstanceState)
-        //binding = ActivityMainBinding.inflate(layoutInflater)
-        //setContentView(binding.root)
 
-        // Установка теми при старті програми
-        if (isDarkTheme) {
-            setTheme(R.style.AppTheme_Dark)
-        } else {
-            setTheme(R.style.AppTheme_Light)
-        }
+        // Завантаження збереженої теми перед встановленням макету
+        loadThemePreference()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -63,21 +39,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.overflow_menu, menu) // Переконайтеся, що шлях правильний
+        menuInflater.inflate(R.menu.overflow_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_toggle_theme -> { // Перемикання теми
-                toggleTheme()
-                true
-            }
             R.id.action_trash -> {
                 // Код для обробки натискання на "Смітник"
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun loadThemePreference() {
+        val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        val savedThemeMode = prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_NO)
+        AppCompatDelegate.setDefaultNightMode(savedThemeMode)
     }
 }
