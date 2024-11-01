@@ -60,11 +60,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="36dp"
         android:layout_marginBottom="84dp"
-        android:textColor="@color/white"
+        android:text="@string/btn_add"
+        android:textColor="@color/full_white"
         app:backgroundTint="@color/blue_main"
         app:icon="@drawable/plus"
-        app:iconTint="@color/white"
+        app:iconTint="@color/full_white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/btn_add" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
