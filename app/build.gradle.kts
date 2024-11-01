@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
 }
-
 android {
     namespace = "com.example.smartshop"
     compileSdk = 34
@@ -36,6 +35,9 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+    viewBinding {
+        enable = true
     }
 }
 
