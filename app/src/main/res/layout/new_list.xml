@@ -23,54 +23,71 @@
     <Button
         android:id="@+id/dtn_back_from_create_list"
         style="@android:style/Widget.Material.Button.Borderless"
-        android:layout_width="86dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="28dp"
+        android:layout_width="53dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@color/white"
         android:drawablePadding="8dp"
         android:text=""
         app:cornerRadius="45dp"
         app:icon="@drawable/arrow_left"
         app:iconPadding="0dp"
+        app:iconSize="36sp"
         app:iconTint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_suggestions"
+        android:layout_width="343dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="44dp"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.514"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
-        android:layout_width="383dp"
+        android:layout_width="345dp"
         android:layout_height="58dp"
+        android:focusable="auto"
+        app:boxBackgroundMode="filled"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusTopStart="20dp"
+        app:boxStrokeColor="@color/input_placeholder"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.298">
+        app:layout_constraintVertical_bias="0.294">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/input_new_list"
-            android:layout_width="374dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/new_list" />
+            android:layout_width="345dp"
+            android:layout_height="match_parent"
+            android:width="@dimen/activity_horizontal_margin"
+            android:autoLink="all"
+            android:backgroundTint="@color/input_background"
+            android:hint="@string/new_list"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/text"
+            android:textColorHint="@color/green_main"
+            android:textStyle="bold" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/text_suggestions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="28dp"
         android:text="@string/suggestions"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@+id/textInputLayout"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_suggestions"
-        android:layout_width="372dp"
-        android:layout_height="190dp"
-        android:layout_marginTop="16dp"
-        android:nestedScrollingEnabled="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_suggestions" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
