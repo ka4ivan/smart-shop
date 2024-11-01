@@ -7,8 +7,4 @@
         android:title="@string/trash"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_toggle_theme"
-        android:title="Перемикати тему" />
-
 </menu>
