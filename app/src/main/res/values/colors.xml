@@ -12,8 +12,10 @@
     <color name="black_white">#FFF</color>
     <color name="full_white">#FFF</color>
     <color name="background">#F2F2F2</color>
-    <color name="text">#1F1F1F</color>
+    <color name="text">#262626</color>
     <color name="text_secondary">#818181</color>
-    <color name="dark_gray">#646464</color>
-    <color name="light_gray">#F2F2F2</color>
+    <color name="input_background">#EDEDED</color>
+    <color name="input_placeholder">#BFBFBF</color>
+    <color name="dark_gray">#7B7D7F</color>
+    <color name="light_gray">#F8F8F8</color>
 </resources>
