@@ -21,5 +21,7 @@
     <!--    Профіль     -->
     <string name="black_theme">Чорний</string>
     <string name="white_theme">Білий</string>
+    <string name="privacy_policy">Політика коефіденційності</string>
+    <string name="terms_of_service">Умови надання послуг</string>
 
 </resources>

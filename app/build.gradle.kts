@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 }
-
 android {
     namespace = "com.example.smartshop"
     compileSdk = 34
@@ -35,6 +34,9 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+    viewBinding {
+        enable = true
     }
 }
 

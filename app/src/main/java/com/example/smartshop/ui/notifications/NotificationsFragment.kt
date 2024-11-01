@@ -1,5 +1,7 @@
 package com.example.smartshop.ui.notifications
 
+import android.content.Intent
+import android.net.Uri
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,23 +13,29 @@ import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import com.example.smartshop.R
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.smartshop.databinding.FragmentNotificationsBinding
 
 class NotificationsFragment : Fragment() {
 
     private lateinit var themeSelector: Spinner
-    private lateinit var rootView: View
+    private var _binding: FragmentNotificationsBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        rootView = inflater.inflate(R.layout.fragment_notifications, container, false)
-        themeSelector = rootView.findViewById(R.id.theme_selector)
+        // Інфляція макету фрагмента
+        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+
+        // Отримання кореневого вигляду з binding
+        val rootView = binding.root
 
         // Завантаження збереженої теми при створенні фрагмента
         loadThemePreference()
 
-        // Створюємо адаптер для Spinner
+        // Налаштування Spinner для вибору теми
+        themeSelector = binding.themeSelector // Використання binding для доступу до Spinner
         val themeOptions = arrayOf("Темна", "Світла")
         val adapter = ArrayAdapter(requireContext(), R.layout.spinner_item, themeOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -48,7 +56,23 @@ class NotificationsFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
+        // Налаштування кліка для політики конфіденційності
+        binding.privacyPolicy.setOnClickListener {
+            openWebPage("https://github.com/ka4ivan")
+        }
+
+        // Налаштування кліка для умови використання
+        binding.termsOfService.setOnClickListener {
+            openWebPage("https://github.com/nezocks")
+        }
+
         return rootView
+    }
+
+    private fun openWebPage(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        startActivity(intent)
     }
 
     private fun applyTheme(themeMode: Int) {
