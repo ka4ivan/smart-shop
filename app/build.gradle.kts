@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.smartshop"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.smartshop"
