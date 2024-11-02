@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
@@ -26,10 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SmartShopTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    Greeting(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -37,25 +35,25 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(modifier: Modifier = Modifier) {
     "Greeting".logD()
-    var name by remember { mutableStateOf("") }
+    Column {
+        var name by remember { mutableStateOf("") }
 
-//    var name:String = ""
+        Text(
+            text = "Hello $name!",
+            modifier = modifier
+        )
 
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-
-    OutlinedTextField(
-        value = name,
-        onValueChange = { newName: String ->
-            "newName: $newName".logD()
-            name = newName
-        },
-        label = { Text("Name") }
-    )
+        OutlinedTextField(
+            value = name,
+            onValueChange = { newName: String ->
+                "newName: $newName".logD()
+                name = newName
+            },
+            label = { Text("Name") }
+        )
+    }
 }
 
 fun String.logD() {
@@ -66,6 +64,6 @@ fun String.logD() {
 @Composable
 fun GreetingPreview() {
     SmartShopTheme {
-        Greeting("Android")
+        Greeting()
     }
 }
