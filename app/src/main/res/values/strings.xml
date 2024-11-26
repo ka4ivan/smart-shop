@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SmartShop</string>
     <string name="new_list">Новий список</string>
+    <string name="empty_list">Пустий список</string>
     <string name="trash">Смітник</string>
     <string name="hello">Привіт✌️</string>
     <string name="menu">Меню</string>

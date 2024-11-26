@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.smartshop.R
+import com.smartshop.ui.modifiers.borderBottom
 
 data class BottomNavigationItem(
     val title: String,
@@ -40,7 +41,7 @@ fun BottomNavigationBar(
                             colorResource(R.color.green)
                         } else {
                             colorResource(R.color.text_secondary)
-                        }
+                        },
                     )
                 },
                 icon = {
@@ -51,7 +52,7 @@ fun BottomNavigationBar(
                             } else if (item.hasNews) {
                                 Badge()
                             }
-                        }
+                        },
                     ) {
                         Icon(
                             imageVector = if (index == selectedItemIndex) {
@@ -66,6 +67,12 @@ fun BottomNavigationBar(
                             },
                         )
                     }
+                },
+                modifier = if (index == selectedItemIndex) {
+                    Modifier
+                        .borderBottom(height = 4.dp, color =  colorResource(R.color.green), cornerRadius = 3.dp)
+                } else {
+                    Modifier
                 },
             )
         }

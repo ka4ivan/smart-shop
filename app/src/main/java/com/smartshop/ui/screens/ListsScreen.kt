@@ -1,5 +1,7 @@
 package com.smartshop.ui.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,15 +20,48 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smartshop.R
 
 @Composable
 fun ListsScreen(modifier: Modifier = Modifier) {
+    val lists = emptyList<String>() // TODO Отримати список
+
     Box(modifier = modifier.fillMaxSize()) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Lists Screen")
+        if (lists.isEmpty()) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.empty_list),
+                    contentDescription = "Empty List",
+                    modifier = Modifier
+                        .size(250.dp)
+                        .padding(bottom = 36.dp)
+                )
+                Text(
+                    text = stringResource(R.string.lets_plan_your_shopping),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.text),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+                Text(
+                    text = stringResource(R.string.click_on_the_plus_to_create_your_first_list),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    color = colorResource(R.color.text_secondary),
+                    modifier = Modifier.padding(bottom = 64.dp)
+                )
+            }
         }
 
         ExtendedFloatingActionButton(
