@@ -31,7 +31,7 @@ fun ListsScreen(modifier: Modifier = Modifier) {
 
         ExtendedFloatingActionButton(
             onClick = { /* TODO Додати логіку для створення нового списку */ },
-            containerColor = colorResource(R.color.blue),
+            containerColor = colorResource(R.color.btn_add_background),
             shape = RoundedCornerShape(50),
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -39,7 +39,7 @@ fun ListsScreen(modifier: Modifier = Modifier) {
         ) {
             Icon(imageVector = ImageVector.vectorResource(R.drawable.plus),
                 contentDescription = stringResource(R.string.new_list),
-                tint = colorResource(R.color.full_white),
+                tint = colorResource(R.color.btn_add_text),
                 modifier = Modifier.size(14.dp),
             )
             Text(
@@ -48,7 +48,7 @@ fun ListsScreen(modifier: Modifier = Modifier) {
                 },
                 fontSize = 16.sp,
                 fontWeight = FontWeight(600),
-                color = colorResource(R.color.full_white),
+                color = colorResource(R.color.btn_add_text),
                 modifier = Modifier.padding(start = 12.dp),
             )
         }
