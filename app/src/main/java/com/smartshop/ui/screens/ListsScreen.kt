@@ -1,21 +1,15 @@
 package com.smartshop.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.buildAnnotatedString
@@ -30,6 +24,21 @@ fun ListsScreen(modifier: Modifier = Modifier) {
     val lists = emptyList<String>() // TODO Отримати список
 
     Box(modifier = modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.my_lists),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = colorResource(R.color.text)
+            )
+        }
+
         if (lists.isEmpty()) {
             Column(
                 modifier = Modifier
@@ -39,7 +48,7 @@ fun ListsScreen(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.empty_list),
+                    painter = painterResource(id = R.drawable.empty_list),
                     contentDescription = "Empty List",
                     modifier = Modifier
                         .size(250.dp)
@@ -64,6 +73,7 @@ fun ListsScreen(modifier: Modifier = Modifier) {
             }
         }
 
+        // Кнопка для додавання нового списку
         ExtendedFloatingActionButton(
             onClick = { /* TODO Додати логіку для створення нового списку */ },
             containerColor = colorResource(R.color.btn_add_background),
@@ -72,7 +82,8 @@ fun ListsScreen(modifier: Modifier = Modifier) {
                 .align(Alignment.BottomEnd)
                 .padding(18.dp, 18.dp, 18.dp, 64.dp)
         ) {
-            Icon(imageVector = ImageVector.vectorResource(R.drawable.plus),
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.plus),
                 contentDescription = stringResource(R.string.new_list),
                 tint = colorResource(R.color.btn_add_text),
                 modifier = Modifier.size(14.dp),
