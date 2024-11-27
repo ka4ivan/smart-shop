@@ -22,6 +22,7 @@ import com.smartshop.R
 @Composable
 fun ListsScreen(modifier: Modifier = Modifier) {
     val lists = emptyList<String>() // TODO Отримати список
+    var menuExpanded by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.fillMaxSize()) {
         Row(
@@ -37,6 +38,48 @@ fun ListsScreen(modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.ExtraBold,
                 color = colorResource(R.color.text)
             )
+
+            Box {
+                IconButton(onClick = { menuExpanded = !menuExpanded }) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.menu_dots),
+                        contentDescription = stringResource(R.string.menu),
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false },
+                    modifier = Modifier.wrapContentSize(Alignment.TopEnd)
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.trash),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(28.dp)
+                                        .padding(end = 8.dp),
+                                    tint = LocalContentColor.current
+                                )
+                                Text(
+                                    text = stringResource(R.string.trash),
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier
+                                        .padding(end = 36.dp),
+                                )
+                            }
+                        },
+                        onClick = {
+                            menuExpanded = false
+                            // TODO: Додати логіку для переходу до смітника
+                        }
+                    )
+                }
+            }
         }
 
         if (lists.isEmpty()) {
