@@ -62,7 +62,11 @@ fun CreateListScreen(navController: NavController, modifier: Modifier = Modifier
                 }
             }
 
-            val images = listOf("carrot", "carrot_2", "beetroot", "broccoli", "granola", "kawaii", "onion", "pepper", "pumpkin", "salad", "watermelon")
+            val images = listOf(
+                "carrot", "carrot_2", "beetroot", "broccoli", "granola", "kawaii", "onion",
+                "pepper", "pumpkin", "salad", "watermelon", "coffee"
+            )
+
             val randomImageName = remember { images.random() }
             val context = LocalContext.current
             val randomImageResId = context.resources.getIdentifier(randomImageName, "drawable", context.packageName)
