@@ -1,5 +1,10 @@
 package com.smartshop
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -53,29 +58,55 @@ fun Navigation() {
 
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(
-                items = items,
-                selectedItemIndex = selectedItemIndex,
-                onItemSelected = { index ->
-                    val route = items[index].route
-                    if (currentRoute != route) { // Уникнення повторної навігації
-                        navController.navigate(route) {
-                            popUpTo(navController.graph.startDestinationId) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
+            if (currentRoute != Screen.CreateListScreen.route) {  // Якщо це не CreateListScreen, показуємо меню
+                BottomNavigationBar(
+                    items = items,
+                    selectedItemIndex = selectedItemIndex,
+                    onItemSelected = { index ->
+                        val route = items[index].route
+                        if (currentRoute != route) {
+                            navController.navigate(route) {
+                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
         }
     ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = Screen.ListsScreen.route,
-            Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            enterTransition = {
+                scaleIn(
+                    initialScale = 0.8f, 
+                    animationSpec = tween(225)
+                ) + fadeIn(animationSpec = tween(225))
+            },
+            exitTransition = {
+                scaleOut(
+                    targetScale = 0.8f,
+                    animationSpec = tween(225)
+                ) + fadeOut(animationSpec = tween(225))
+            },
+            popEnterTransition = {
+                scaleIn(
+                    initialScale = 0.8f,
+                    animationSpec = tween(225)
+                ) + fadeIn(animationSpec = tween(225))
+            },
+            popExitTransition = {
+                scaleOut(
+                    targetScale = 0.8f,
+                    animationSpec = tween(225)
+                ) + fadeOut(animationSpec = tween(225))
+            }
         ) {
             composable(Screen.ListsScreen.route) { ListsScreen(navController = navController) }
-            composable(Screen.CreateListScreen.route) { CreateListScreen() }
+            composable(Screen.CreateListScreen.route) { CreateListScreen(navController = navController) }
             composable(Screen.WeatherScreen.route) { WeatherScreen() }
             composable(Screen.ProfileScreen.route) { ProfileScreen() }
         }
