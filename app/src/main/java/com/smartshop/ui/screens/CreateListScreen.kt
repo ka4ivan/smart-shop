@@ -21,11 +21,11 @@ import androidx.compose.ui.unit.sp
 import com.smartshop.R
 
 @Composable
-fun ListsScreen(modifier: Modifier = Modifier) {
+fun CreateListScreen(modifier: Modifier = Modifier) {
     val lists = emptyList<String>() // TODO Отримати список
     var menuExpanded by remember { mutableStateOf(false) }
 
-    Box(modifier = modifier.fillMaxSize().background(color = colorResource(R.color.background))) {
+    Box(modifier = modifier.fillMaxSize().background(color = colorResource(R.color.green))) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -91,13 +91,6 @@ fun ListsScreen(modifier: Modifier = Modifier) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.empty_list),
-                    contentDescription = "Empty List",
-                    modifier = Modifier
-                        .size(250.dp)
-                        .padding(bottom = 36.dp)
-                )
                 Text(
                     text = stringResource(R.string.lets_plan_your_shopping),
                     fontSize = 16.sp,

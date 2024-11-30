@@ -4,9 +4,10 @@
     <color name="white">#1F1F1F</color>
     <color name="black_white">#000</color>
     <color name="dark_gray">#F8F8F8</color>
-    <color name="light_gray">#7B7D7F</color>
+    <color name="light_gray">#2C2C2C</color>
 
-    <color name="background">#282828</color>
+    <color name="background">#1C1C1C</color>
+    <color name="background_bottom_menu">#1C1C1C</color>
     <color name="text">#E6E6E6</color>
     <color name="text_secondary">#A9A9A9</color>
     <color name="input_background">#BFBFBF</color>
