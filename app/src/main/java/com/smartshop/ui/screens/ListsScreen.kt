@@ -78,7 +78,7 @@ fun ListsScreen(navController: NavController, modifier: Modifier = Modifier) {
                         },
                         onClick = {
                             menuExpanded = false
-                            // TODO: Додати логіку для переходу до смітника
+                            navController.navigate(Screen.TrashScreen.route)
                         }
                     )
                 }
@@ -94,10 +94,10 @@ fun ListsScreen(navController: NavController, modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.empty_list),
+                    painter = painterResource(id = R.drawable.vegetables_wrtite),
                     contentDescription = "Empty List",
                     modifier = Modifier
-                        .size(250.dp)
+                        .size(325.dp)
                         .padding(bottom = 36.dp)
                 )
                 Text(

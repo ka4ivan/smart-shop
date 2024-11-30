@@ -22,6 +22,7 @@ import com.smartshop.ui.components.BottomNavigationItem
 import com.smartshop.ui.screens.CreateListScreen
 import com.smartshop.ui.screens.ListsScreen
 import com.smartshop.ui.screens.ProfileScreen
+import com.smartshop.ui.screens.TrashScreen
 import com.smartshop.ui.screens.WeatherScreen
 
 @Composable
@@ -54,7 +55,7 @@ fun Navigation() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val selectedItemIndex = items.indexOfFirst { it.route == currentRoute }
+    val selectedItemIndex = items.indexOfFirst { (it.route == currentRoute || (currentRoute == Screen.TrashScreen.route && it.route == Screen.ListsScreen.route)) }
 
     Scaffold(
         bottomBar = {
@@ -109,6 +110,7 @@ fun Navigation() {
             composable(Screen.CreateListScreen.route) { CreateListScreen(navController = navController) }
             composable(Screen.WeatherScreen.route) { WeatherScreen() }
             composable(Screen.ProfileScreen.route) { ProfileScreen() }
+            composable(Screen.TrashScreen.route) { TrashScreen(navController = navController) }
         }
     }
 }
