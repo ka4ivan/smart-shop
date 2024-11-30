@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">SmartShop</string>
     <string name="new_list">Новий список</string>
+    <string name="my_lists">Мої списки</string>
     <string name="empty_list">Пустий список</string>
     <string name="trash">Смітник</string>
     <string name="hello">Привіт✌️</string>
     <string name="menu">Меню</string>
+    <string name="back">Назад</string>
     <string name="edit">Редагувати</string>
     <string name="delete">Видалити</string>
     <string name="lists">Списки</string>
@@ -18,4 +20,14 @@
     <string name="white">Білий</string>
     <string name="privacy_policy">Політика коефіденційності</string>
     <string name="terms_of_service">Умови надання послуг</string>
+
+    <string name="products">Продукти</string>
+    <string name="food">Їжа</string>
+    <string name="medicines">Ліки</string>
+    <string name="weekend">Вихідні</string>
+    <string name="friday">П\'ятниця</string>
+    <string name="trip">Поїздка</string>
+    <string name="supermarket">Супермаркет</string>
+    <string name="home">Дім</string>
+    <string name="travel">У подорож</string>
 </resources>
