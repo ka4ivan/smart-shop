@@ -26,6 +26,7 @@ data class BottomNavigationItem(
     val unselectedIcon: ImageVector,
     val hasNews: Boolean,
     val badgeCount: Int? = null,
+    val route: String,
 )
 
 @Composable

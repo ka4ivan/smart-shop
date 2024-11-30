@@ -18,10 +18,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.smartshop.R
+import com.smartshop.Screen
 
 @Composable
-fun ListsScreen(modifier: Modifier = Modifier) {
+fun ListsScreen(navController: NavController, modifier: Modifier = Modifier) {
     val lists = emptyList<String>() // TODO Отримати список
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -119,7 +121,9 @@ fun ListsScreen(modifier: Modifier = Modifier) {
 
         // Кнопка для додавання нового списку
         ExtendedFloatingActionButton(
-            onClick = { /* TODO Відкрити вікно із створенням списку */ },
+            onClick = {
+                navController.navigate(Screen.CreateListScreen.route)
+            },
             containerColor = colorResource(R.color.btn_add_background),
             shape = RoundedCornerShape(50),
             modifier = Modifier
