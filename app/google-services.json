@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "48080067875",
+    "project_id": "lntu-94305",
+    "storage_bucket": "lntu-94305.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48080067875:android:eb5659f692791ae3b2c096",
+        "android_client_info": {
+          "package_name": "com.smartshop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkjoKxJKLnhUHFAewnd09snZSDMkygAh8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
