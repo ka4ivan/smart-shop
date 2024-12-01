@@ -56,6 +56,8 @@ dependencies {
     implementation (platform(libs.firebase.bom))
     implementation(libs.firebase.database)
     implementation (libs.firebase.database.ktx)
+    implementation (libs.androidx.runtime.livedata)
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.kotlinx.coroutines.play.services)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

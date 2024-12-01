@@ -1,5 +1,6 @@
 package com.smartshop.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smartshop.data.model.ListData
@@ -17,6 +18,14 @@ class ListViewModel : ViewModel() {
     fun fetchAllLists() {
         viewModelScope.launch {
             _lists.value = repository.getAllLists()
+        }
+    }
+
+    fun getLists(userId: String) {
+        viewModelScope.launch {
+            val lists = repository.getLists(userId)
+            Log.d("ListViewModel", "Fetched lists: $lists")
+            _lists.value = lists
         }
     }
 

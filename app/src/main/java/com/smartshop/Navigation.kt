@@ -107,7 +107,10 @@ fun Navigation() {
                 ) + fadeOut(animationSpec = tween(225))
             }
         ) {
-            composable(Screen.ListsScreen.route) { ListsScreen(navController = navController) }
+            composable(Screen.ListsScreen.route) { ListsScreen(
+                navController = navController,
+                viewModel = ListViewModel(),
+            ) }
             composable(Screen.CreateListScreen.route) { CreateListScreen(
                 navController = navController,
                 viewModel = ListViewModel(),
