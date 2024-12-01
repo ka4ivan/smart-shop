@@ -64,6 +64,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                         imageVector = ImageVector.vectorResource(R.drawable.menu_dots),
                         contentDescription = stringResource(R.string.menu),
                         modifier = Modifier.size(20.dp),
+                        tint = LocalCustomColors.current.blackWhite,
                     )
                 }
 
