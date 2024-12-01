@@ -16,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
@@ -28,6 +27,7 @@ import com.smartshop.R
 import com.smartshop.Screen
 import com.smartshop.data.model.ListData
 import com.smartshop.data.utils.UserUtils
+import com.smartshop.ui.theme.LocalCustomColors
 import com.smartshop.ui.viewmodel.ListViewModel
 
 @SuppressLint("HardwareIds")
@@ -47,7 +47,6 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(color = colorResource(R.color.background))
     ) {
         Column(
             modifier = Modifier
@@ -70,7 +69,7 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                     Icon(
                         painter = painterResource(R.drawable.arrow_left),
                         contentDescription = stringResource(R.string.back),
-                        tint = colorResource(R.color.text),
+                        tint = LocalCustomColors.current.text,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -93,7 +92,7 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                     Text(
                         text = stringResource(R.string.new_list),
                         fontWeight = FontWeight.ExtraBold,
-                        color = colorResource(R.color.text_secondary)
+                        color = LocalCustomColors.current.textSecondary
                     )
                 },
                 textStyle = LocalTextStyle.current.copy(fontWeight = FontWeight.ExtraBold),
@@ -101,11 +100,11 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = colorResource(R.color.input_background),
-                    focusedBorderColor = colorResource(R.color.light_gray),
-                    unfocusedBorderColor = colorResource(R.color.light_gray),
-                    focusedTextColor = colorResource(R.color.text),
-                    unfocusedTextColor = colorResource(R.color.text),
+                    containerColor = LocalCustomColors.current.inputBackground,
+                    focusedBorderColor = LocalCustomColors.current.lightGray,
+                    unfocusedBorderColor = LocalCustomColors.current.lightGray,
+                    focusedTextColor = LocalCustomColors.current.text,
+                    unfocusedTextColor = LocalCustomColors.current.text,
                 ),
                 shape = MaterialTheme.shapes.medium.copy(CornerSize(16.dp))
             )
@@ -115,7 +114,7 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                 text = stringResource(id = R.string.suggestions),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = colorResource(R.color.text),
+                color = LocalCustomColors.current.text,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -144,13 +143,13 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                             .wrapContentWidth()
                             .height(28.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (inputText == suggestion) colorResource(R.color.light_blue) else colorResource(R.color.btn_suggestion_background),
+                            containerColor = if (inputText == suggestion) LocalCustomColors.current.lightBlue else LocalCustomColors.current.btnSuggestionBackground,
                         )
                     ) {
                         Text(
                             text = suggestion,
                             fontSize = 13.sp,
-                            color = if (inputText == suggestion) colorResource(R.color.blue) else colorResource(R.color.text_secondary),
+                            color = if (inputText == suggestion) LocalCustomColors.current.blue else LocalCustomColors.current.textSecondary,
                             fontWeight = FontWeight(800),
                             modifier = Modifier.padding(0.dp),
                         )
@@ -176,7 +175,7 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.btn_add_background),
+                    containerColor = LocalCustomColors.current.btnAddBackground,
                 )
             ) {
                 Text(
@@ -185,7 +184,7 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                     },
                     fontSize = 16.sp,
                     fontWeight = FontWeight(600),
-                    color = colorResource(R.color.btn_add_text),
+                    color = LocalCustomColors.current.btnAddText,
                     modifier = Modifier.padding(5.dp),
                 )
             }

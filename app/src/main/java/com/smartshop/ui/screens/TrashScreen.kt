@@ -1,7 +1,7 @@
 package com.smartshop.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,12 +28,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.smartshop.R
 import com.smartshop.Screen
+import com.smartshop.ui.theme.LocalCustomColors
 
 @Composable
 fun TrashScreen(navController: NavController, modifier: Modifier = Modifier) {
     val trashLists = emptyList<String>() // TODO Отримати список видалених
+    Log.d("ThemeDebug", "Current background: ${MaterialTheme.colorScheme.background}")
 
-    Box(modifier = modifier.fillMaxSize().background(color = colorResource(R.color.background))) {
+    Box(modifier = modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -48,7 +50,7 @@ fun TrashScreen(navController: NavController, modifier: Modifier = Modifier) {
                 Icon(
                     painter = painterResource(R.drawable.arrow_left),
                     contentDescription = stringResource(R.string.back),
-                    tint = colorResource(R.color.text),
+                    tint = LocalCustomColors.current.text,
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -59,7 +61,7 @@ fun TrashScreen(navController: NavController, modifier: Modifier = Modifier) {
                 text = stringResource(R.string.trash),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = colorResource(R.color.text)
+                color = LocalCustomColors.current.text
             )
         }
 
@@ -82,7 +84,7 @@ fun TrashScreen(navController: NavController, modifier: Modifier = Modifier) {
                     text = stringResource(R.string.lets_plan_your_shopping),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.text),
+                    color = LocalCustomColors.current.text,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 8.dp),
                 )
@@ -91,7 +93,7 @@ fun TrashScreen(navController: NavController, modifier: Modifier = Modifier) {
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
-                    color = colorResource(R.color.text_secondary),
+                    color = LocalCustomColors.current.textSecondary,
                     modifier = Modifier.padding(bottom = 64.dp)
                 )
             }

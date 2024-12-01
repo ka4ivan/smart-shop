@@ -3,9 +3,7 @@ package com.smartshop.ui.screens
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -13,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -26,6 +23,7 @@ import androidx.navigation.NavController
 import com.smartshop.R
 import com.smartshop.Screen
 import com.smartshop.data.utils.UserUtils
+import com.smartshop.ui.theme.LocalCustomColors
 import com.smartshop.ui.viewmodel.ListViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -45,7 +43,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
 
     Log.d("ListsScreen", "List data: $lists")
 
-    Box(modifier = modifier.fillMaxSize().background(color = colorResource(R.color.background))) {
+    Box(modifier = modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -57,7 +55,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                 text = stringResource(R.string.my_lists),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = colorResource(R.color.text)
+                color = LocalCustomColors.current.text
             )
 
             Box {
@@ -122,7 +120,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                     text = stringResource(R.string.lets_plan_your_shopping),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.text),
+                    color = LocalCustomColors.current.text,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 8.dp),
                 )
@@ -131,7 +129,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
-                    color = colorResource(R.color.text_secondary),
+                    color = LocalCustomColors.current.textSecondary,
                     modifier = Modifier.padding(bottom = 64.dp)
                 )
             }
@@ -143,7 +141,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
             onClick = {
                 navController.navigate(Screen.CreateListScreen.route)
             },
-            containerColor = colorResource(R.color.btn_add_background),
+            containerColor = LocalCustomColors.current.btnAddBackground,
             shape = RoundedCornerShape(50),
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -152,7 +150,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.plus),
                 contentDescription = stringResource(R.string.new_list),
-                tint = colorResource(R.color.btn_add_text),
+                tint = LocalCustomColors.current.btnAddText,
                 modifier = Modifier.size(14.dp),
             )
             Text(
@@ -161,7 +159,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                 },
                 fontSize = 16.sp,
                 fontWeight = FontWeight(600),
-                color = colorResource(R.color.btn_add_text),
+                color = LocalCustomColors.current.btnAddText,
                 modifier = Modifier.padding(start = 12.dp),
             )
         }
