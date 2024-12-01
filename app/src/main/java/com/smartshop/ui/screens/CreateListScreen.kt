@@ -1,5 +1,6 @@
 package com.smartshop.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,11 +26,23 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.smartshop.R
 import com.smartshop.Screen
+import com.smartshop.data.model.ListData
+import com.smartshop.data.utils.UserUtils
+import com.smartshop.ui.viewmodel.ListViewModel
 
+@SuppressLint("HardwareIds")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateListScreen(navController: NavController, modifier: Modifier = Modifier) {
+fun CreateListScreen(navController: NavController, viewModel: ListViewModel, modifier: Modifier = Modifier) {
     var inputText by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    val images = listOf(
+        "carrot", "carrot_2", "beetroot", "broccoli", "granola", "kawaii", "onion",
+        "pepper", "pumpkin", "salad", "watermelon", "coffee"
+    )
+    val randomImageName = remember { images.random() }
+    val randomImageResId = context.resources.getIdentifier(randomImageName, "drawable", context.packageName)
 
     Box(
         modifier = modifier
@@ -43,6 +56,7 @@ fun CreateListScreen(navController: NavController, modifier: Modifier = Modifier
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
+            // Кнопка Назад
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -62,15 +76,7 @@ fun CreateListScreen(navController: NavController, modifier: Modifier = Modifier
                 }
             }
 
-            val images = listOf(
-                "carrot", "carrot_2", "beetroot", "broccoli", "granola", "kawaii", "onion",
-                "pepper", "pumpkin", "salad", "watermelon", "coffee"
-            )
-
-            val randomImageName = remember { images.random() }
-            val context = LocalContext.current
-            val randomImageResId = context.resources.getIdentifier(randomImageName, "drawable", context.packageName)
-
+            // Зображення
             Image(
                 painter = painterResource(id = randomImageResId),
                 contentDescription = stringResource(R.string.new_list),
@@ -83,7 +89,7 @@ fun CreateListScreen(navController: NavController, modifier: Modifier = Modifier
             OutlinedTextField(
                 value = inputText,
                 onValueChange = { newText -> inputText = newText },
-                placeholder = { // Плейсхолдер замість label
+                placeholder = {
                     Text(
                         text = stringResource(R.string.new_list),
                         fontWeight = FontWeight.ExtraBold,
@@ -153,8 +159,21 @@ fun CreateListScreen(navController: NavController, modifier: Modifier = Modifier
             }
 
             Spacer(modifier = Modifier.weight(1f))
+
+            // Кнопка створення
             Button(
-                onClick = { /* Дія при натисканні кнопки "Створити" */ },
+                onClick = {
+                    val listData = ListData(
+                        name = if ("" == inputText) context.getString(R.string.new_list) else inputText,
+                        userId = UserUtils.getUserId(context),
+                        isDelete = false,
+                        createdAt = null,
+                        updatedAt = null,
+                    )
+
+                    viewModel.createList(listData)
+                    navController.navigate(Screen.ListsScreen.route)
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.btn_add_background),
