@@ -24,6 +24,7 @@ import com.smartshop.ui.screens.ListsScreen
 import com.smartshop.ui.screens.ProfileScreen
 import com.smartshop.ui.screens.TrashScreen
 import com.smartshop.ui.screens.WeatherScreen
+import com.smartshop.ui.viewmodel.ListViewModel
 
 @Composable
 fun Navigation() {
@@ -106,8 +107,14 @@ fun Navigation() {
                 ) + fadeOut(animationSpec = tween(225))
             }
         ) {
-            composable(Screen.ListsScreen.route) { ListsScreen(navController = navController) }
-            composable(Screen.CreateListScreen.route) { CreateListScreen(navController = navController) }
+            composable(Screen.ListsScreen.route) { ListsScreen(
+                navController = navController,
+                viewModel = ListViewModel(),
+            ) }
+            composable(Screen.CreateListScreen.route) { CreateListScreen(
+                navController = navController,
+                viewModel = ListViewModel(),
+            ) }
             composable(Screen.WeatherScreen.route) { WeatherScreen() }
             composable(Screen.ProfileScreen.route) { ProfileScreen() }
             composable(Screen.TrashScreen.route) { TrashScreen(navController = navController) }
