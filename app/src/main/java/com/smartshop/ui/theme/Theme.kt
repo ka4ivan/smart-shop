@@ -23,6 +23,7 @@ data class CustomColors(
     val btnSuggestionBackground: Color,
     val btnAddText: Color,
     val inputBackground: Color,
+    val blackWhite: Color,
 )
 val LocalCustomColors = staticCompositionLocalOf {
     CustomColors(
@@ -37,6 +38,7 @@ val LocalCustomColors = staticCompositionLocalOf {
         btnSuggestionBackground = Color.Unspecified,
         btnAddText = Color.Unspecified,
         inputBackground = Color.Unspecified,
+        blackWhite = Color.Unspecified,
     )
 }
 
@@ -86,6 +88,7 @@ fun SmartShopTheme(
             btnSuggestionBackground = BtnSuggestionBackgroundDark,
             btnAddText = BtnAddTextDark,
             inputBackground = InputBackgroundDark,
+            blackWhite = BlackWhiteDark,
         )
     } else {
         CustomColors(
@@ -100,6 +103,7 @@ fun SmartShopTheme(
             btnSuggestionBackground = BtnSuggestionBackgroundLight,
             btnAddText = BtnAddTextLight,
             inputBackground = InputBackgroundLight,
+            blackWhite = BlackWhiteLight,
         )
     }
 
