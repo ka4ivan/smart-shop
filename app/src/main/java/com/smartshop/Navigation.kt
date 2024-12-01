@@ -26,7 +26,10 @@ import com.smartshop.ui.screens.TrashScreen
 import com.smartshop.ui.screens.WeatherScreen
 
 @Composable
-fun Navigation() {
+fun Navigation(
+    currentTheme: Boolean,
+    onThemeChange: (Boolean) -> Unit
+) {
     val navController = rememberNavController()
     val items = listOf(
         BottomNavigationItem(
@@ -109,7 +112,12 @@ fun Navigation() {
             composable(Screen.ListsScreen.route) { ListsScreen(navController = navController) }
             composable(Screen.CreateListScreen.route) { CreateListScreen(navController = navController) }
             composable(Screen.WeatherScreen.route) { WeatherScreen() }
-            composable(Screen.ProfileScreen.route) { ProfileScreen() }
+            composable(Screen.ProfileScreen.route) {
+                ProfileScreen(
+                    currentTheme = currentTheme,
+                    onThemeChange = onThemeChange
+                )
+            }
             composable(Screen.TrashScreen.route) { TrashScreen(navController = navController) }
         }
     }
