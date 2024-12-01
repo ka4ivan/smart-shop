@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.util.Log
+import androidx.compose.ui.res.stringResource
+import com.smartshop.R
 import com.smartshop.ui.theme.BackgroundDark
 import com.smartshop.ui.theme.BackgroundLight
 import com.smartshop.ui.theme.Dark
@@ -22,12 +24,12 @@ fun ProfileScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background), // Фон змінюється за темою
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "Привіт",
+                text = stringResource(R.string.hello),
                 fontSize = 24.sp,
                 color = if (currentTheme) Light else Dark
             )
@@ -49,29 +51,34 @@ fun DropdownMenuThemeSelector(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val themeOptions = listOf("Темна", "Світла")
+    var selectedOption by remember { mutableStateOf(themeOptions[if (currentTheme) 0 else 1]) }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp) // Відступи зліва та справа
     ) {
-        // Кнопка, що відкриває меню для вибору теми
+        // Кнопка для відкриття меню
         Button(
-            onClick = { expanded = true },
+            onClick = { expanded = !expanded },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = if (currentTheme) "Темна" else "Світла")
+            Text(text = selectedOption)
         }
 
-        // Випадаюче меню для вибору теми
+        // Випадаючий список
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp) // Відступи між меню та краями
         ) {
-            themeOptions.forEachIndexed { index, theme ->
+            themeOptions.forEach { theme ->
                 DropdownMenuItem(
                     onClick = {
-                        onThemeChange(index == 0)
+                        selectedOption = theme
+                        onThemeChange(theme == "Темна")
                         expanded = false
                     },
                     text = { Text(theme) }
