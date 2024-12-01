@@ -1,14 +1,18 @@
 package com.smartshop.ui.screens
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -21,11 +25,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.smartshop.R
 import com.smartshop.Screen
+import com.smartshop.data.utils.UserUtils
+import com.smartshop.ui.viewmodel.ListViewModel
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun ListsScreen(navController: NavController, modifier: Modifier = Modifier) {
-    val lists = emptyList<String>() // TODO Отримати список
+fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier: Modifier = Modifier) {
+
     var menuExpanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val userId = UserUtils.getUserId(context)
+
+    // TODO доробити отримання даних
+    LaunchedEffect(userId) {
+        viewModel.getLists(userId)
+    }
+
+    val lists by viewModel.lists.collectAsState()
+
+    Log.d("ListsScreen", "List data: $lists")
 
     Box(modifier = modifier.fillMaxSize().background(color = colorResource(R.color.background))) {
         Row(
@@ -117,6 +135,7 @@ fun ListsScreen(navController: NavController, modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(bottom = 64.dp)
                 )
             }
+        } else {
         }
 
         // Кнопка для додавання нового списку
