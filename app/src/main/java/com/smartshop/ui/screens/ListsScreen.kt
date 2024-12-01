@@ -3,7 +3,10 @@ package com.smartshop.ui.screens
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,14 +37,17 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
     val context = LocalContext.current
     val userId = UserUtils.getUserId(context)
 
-    // TODO доробити отримання даних
-    LaunchedEffect(userId) {
-        viewModel.getLists(userId)
+    val lists by viewModel.lists.collectAsState(initial = emptyList())
+    Log.d("USER_ID", userId)
+
+    Log.d("LISTS1", lists.toString())
+    if (lists.isEmpty()) {
+        LaunchedEffect(userId) {
+            viewModel.getLists(userId)
+        }
     }
 
-    val lists by viewModel.lists.collectAsState()
-
-    Log.d("ListsScreen", "List data: $lists")
+    Log.d("LISTS2", lists.toString())
 
     Box(modifier = modifier.fillMaxSize()) {
         Row(
@@ -71,7 +77,13 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                 DropdownMenu(
                     expanded = menuExpanded,
                     onDismissRequest = { menuExpanded = false },
-                    modifier = Modifier.wrapContentSize(Alignment.TopEnd)
+                    modifier = Modifier
+                        .wrapContentSize(Alignment.TopEnd)
+                        .background(
+                            color = LocalCustomColors.current.bottomMenuBackground,
+                        )
+                        .width(200.dp)
+                        .padding(0.dp)
                 ) {
                     DropdownMenuItem(
                         text = {
@@ -82,10 +94,11 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                                     modifier = Modifier
                                         .size(28.dp)
                                         .padding(end = 8.dp),
-                                    tint = LocalContentColor.current
+                                    tint = LocalCustomColors.current.text,
                                 )
                                 Text(
                                     text = stringResource(R.string.trash),
+                                    color = LocalCustomColors.current.text,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier
@@ -96,7 +109,11 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                         onClick = {
                             menuExpanded = false
                             navController.navigate(Screen.TrashScreen.route)
-                        }
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 0.dp, vertical = 0.dp)
+                            .fillMaxWidth()
+                            .background(LocalCustomColors.current.bottomMenuBackground)
                     )
                 }
             }
@@ -135,6 +152,23 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                 )
             }
         } else {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                LazyColumn {
+                    items(lists) { listItem ->
+                        Text(
+                            text = listItem.name,
+                            color = LocalCustomColors.current.textSecondary,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                }
+            }
         }
 
         // Кнопка для додавання нового списку
