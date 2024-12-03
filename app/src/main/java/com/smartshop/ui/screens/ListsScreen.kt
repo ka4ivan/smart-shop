@@ -1,17 +1,19 @@
 package com.smartshop.ui.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.smartshop.R
 import com.smartshop.Screen
+import com.smartshop.data.model.ListData
 import com.smartshop.data.utils.UserUtils
 import com.smartshop.ui.theme.LocalCustomColors
 import com.smartshop.ui.viewmodel.ListViewModel
@@ -37,17 +40,13 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
     val context = LocalContext.current
     val userId = UserUtils.getUserId(context)
 
-    val lists by viewModel.lists.collectAsState(initial = emptyList())
-    Log.d("USER_ID", userId)
+    var lists by remember { mutableStateOf(emptyList<ListData>()) }
+    var isLoading by remember { mutableStateOf(true) }
 
-    Log.d("LISTS1", lists.toString())
-    if (lists.isEmpty()) {
-        LaunchedEffect(userId) {
-            viewModel.getLists(userId)
-        }
+    LaunchedEffect(userId) {
+        lists = viewModel.getListsOnce(userId)
+        isLoading = false
     }
-
-    Log.d("LISTS2", lists.toString())
 
     Box(modifier = modifier.fillMaxSize()) {
         Row(
@@ -70,7 +69,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                         imageVector = ImageVector.vectorResource(R.drawable.menu_dots),
                         contentDescription = stringResource(R.string.menu),
                         modifier = Modifier.size(20.dp),
-                        tint = LocalCustomColors.current.blackWhite,
+                        tint = LocalCustomColors.current.listMenu,
                     )
                 }
 
@@ -119,7 +118,12 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
             }
         }
 
-        if (lists.isEmpty()) {
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = LocalCustomColors.current.text
+            )
+        } else if (lists.isEmpty()) {
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -154,18 +158,92 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
         } else {
             Column(
                 modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(16.dp),
+                    .align(Alignment.TopCenter)
+                    .padding(start = 16.dp, top = 65.dp, end = 16.dp, bottom = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Top
             ) {
                 LazyColumn {
-                    items(lists) { listItem ->
-                        Text(
-                            text = listItem.name,
-                            color = LocalCustomColors.current.textSecondary,
-                            modifier = Modifier.padding(16.dp)
-                        )
+                    items(lists) { list ->
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 0.dp, vertical = 7.dp)
+                                .shadow(
+                                    elevation = 3.dp,
+                                    shape = RoundedCornerShape(8.dp),
+                                    clip = false
+                                )
+                                .background(
+                                    LocalCustomColors.current.listBackground,
+                                    RoundedCornerShape(8.dp)
+                                )
+                                .padding(start = 15.dp, top = 10.dp, end = 10.dp, bottom = 15.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = list.name,
+                                    color = LocalCustomColors.current.text,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 20.sp,
+                                    modifier = Modifier
+                                        .align(Alignment.CenterStart)
+                                        .padding(end = 25.dp),
+                                )
+
+                                IconButton(
+                                    onClick = { /* Обробка натискання меню */ },
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .clip(CircleShape)
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.menu_dots),
+                                        contentDescription = "Menu",
+                                        modifier = Modifier.size(12.dp).align(Alignment.CenterEnd),
+                                        tint = LocalCustomColors.current.textSecondary
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = 6.25.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(8.dp)
+                                        .clip(RoundedCornerShape(3.dp))
+                                        .background(LocalCustomColors.current.progressBarBackground)
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .fillMaxWidth(fraction = 2.toFloat() / 7)
+                                            .clip(RoundedCornerShape(3.dp))
+                                            .background(LocalCustomColors.current.green)
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                Text(
+                                    text = "2/7", // TODO отримати кількості
+//                                    text = "${list.completedTasks}/${list.totalTasks}",
+                                    color = LocalCustomColors.current.text,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 14.sp
+                                )
+                            }
+                        }
                     }
                 }
             }
