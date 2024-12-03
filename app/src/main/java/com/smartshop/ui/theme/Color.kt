@@ -53,3 +53,9 @@ val ListBackgroundDark = Color(0xFF2C2C2C)
 val ListBackgroundLight = Color(0xFFFFFFFF)
 val ListMenuDark = Color(0xFFC4C4C4)
 val ListMenuLight = Color(0xFF919191)
+val TextThirdLight = Color(0xFF343434)
+val TextThirdDark = Color(0xFFD3D3D3)
+
+val BlueSky = Color(0xFF70AEF5)
+val Red = Color(0xFFBF2E1C)
+

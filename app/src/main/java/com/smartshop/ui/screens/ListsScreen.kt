@@ -1,6 +1,12 @@
 package com.smartshop.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -29,13 +36,18 @@ import com.smartshop.R
 import com.smartshop.Screen
 import com.smartshop.data.model.ListData
 import com.smartshop.data.utils.UserUtils
+import com.smartshop.ui.theme.BlueSky
+import com.smartshop.ui.theme.BtnAddBackgroundDark
 import com.smartshop.ui.theme.LocalCustomColors
+import com.smartshop.ui.theme.Red
 import com.smartshop.ui.viewmodel.ListViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier: Modifier = Modifier) {
-
     var menuExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val userId = UserUtils.getUserId(context)
@@ -46,6 +58,39 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
     LaunchedEffect(userId) {
         lists = viewModel.getListsOnce(userId)
         isLoading = false
+    }
+
+    var menuVisible by remember { mutableStateOf(false) } // Відображення меню
+    var selectedList by remember { mutableStateOf<ListData?>(null) } // Вибраний список
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val coroutineScope = rememberCoroutineScope()
+    var isDeleteInProgress by remember { mutableStateOf(false) }
+    var showUndoNotification by remember { mutableStateOf(false) }
+    var deletedList by remember { mutableStateOf<ListData?>(null) }
+    var isDeleteCancelled by remember { mutableStateOf(false) }
+
+    LaunchedEffect(showUndoNotification) {
+        if (showUndoNotification) {
+            delay(3000)
+            if (!isDeleteCancelled) {
+                deletedList?.let { list ->
+                    viewModel.deleteList(list.id)
+                    coroutineScope.launch {
+                        lists = viewModel.getListsOnce(userId)
+                    }
+                }
+                showUndoNotification = false
+            }
+        }
+    }
+
+    // Функція для скасування видалення
+    fun cancelDelete() {
+        isDeleteCancelled = true
+        showUndoNotification = false
+        coroutineScope.launch {
+            lists = viewModel.getListsOnce(userId)
+        }
     }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -121,7 +166,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
-                color = LocalCustomColors.current.text
+                color = LocalCustomColors.current.green
             )
         } else if (lists.isEmpty()) {
             Column(
@@ -195,7 +240,10 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                                 )
 
                                 IconButton(
-                                    onClick = { /* Обробка натискання меню */ },
+                                    onClick = {
+                                        selectedList = list
+                                        menuVisible = true
+                                    },
                                     modifier = Modifier
                                         .align(Alignment.TopEnd)
                                         .clip(CircleShape)
@@ -246,6 +294,90 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                         }
                     }
                 }
+                if (menuVisible) {
+                    ModalBottomSheet(
+                        onDismissRequest = {
+                            coroutineScope.launch { sheetState.hide() }
+                            menuVisible = false
+                        },
+                        sheetState = sheetState,
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            // Кнопка перейменування
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch { sheetState.hide() }
+                                    menuVisible = false
+                                    // Логіка перейменування
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(id = R.drawable.edit),
+                                        contentDescription = "Rename",
+                                        modifier = Modifier.size(24.dp),
+                                        tint = LocalCustomColors.current.textThird
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.rename),
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(start = 8.dp),
+                                        color = LocalCustomColors.current.textThird
+                                    )
+                                }
+                            }
+
+                            // Кнопка видалення
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch { sheetState.hide() }
+                                    menuVisible = false
+                                    selectedList?.let { list ->
+                                        lists = lists.filterNot { it.id == list.id }
+                                        deletedList = list
+                                        showUndoNotification = true
+                                        isDeleteInProgress = true
+                                        isDeleteCancelled = false
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(id = R.drawable.trash),
+                                        contentDescription = "Delete",
+                                        modifier = Modifier.size(24.dp),
+                                        tint = Red
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.delete),
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(start = 8.dp),
+                                        color = Red
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -276,5 +408,38 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                 modifier = Modifier.padding(start = 12.dp),
             )
         }
+
+        AnimatedVisibility(
+            visible = showUndoNotification,
+            enter = fadeIn(animationSpec = tween(durationMillis = 500)) + slideInVertically(initialOffsetY = { -it }),
+            exit = fadeOut(animationSpec = tween(durationMillis = 500)) + slideOutVertically(targetOffsetY = { it }),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 110.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .background(BtnAddBackgroundDark, RoundedCornerShape(10.dp))
+                    .padding(vertical = 5.dp, horizontal = 16.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.item_removed),
+                    color = Color.White,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = { cancelDelete() },
+                    colors = ButtonDefaults.buttonColors(containerColor = BtnAddBackgroundDark, contentColor = BlueSky),
+                ) {
+                    Text(text = stringResource(R.string.cancel).uppercase(), fontWeight = FontWeight.Bold)
+                }
+            }
+        }
     }
 }
+

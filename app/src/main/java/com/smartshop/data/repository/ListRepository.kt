@@ -52,11 +52,14 @@ class ListRepository {
 
     suspend fun createList(list: ListData) {
         val timestamp = System.currentTimeMillis()
-
         val listWithTimestamp = list.copy(createdAt = timestamp, updatedAt = timestamp)
+
         val newListRef = database.push()
-        newListRef.setValue(listWithTimestamp).await()
+        val newListWithId = listWithTimestamp.copy(id = newListRef.key ?: "")
+
+        newListRef.setValue(newListWithId).await()
     }
+
 
     suspend fun readList(listId: String): ListData? {
         val snapshot = database.child(listId).get().await()

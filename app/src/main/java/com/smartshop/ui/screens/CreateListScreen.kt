@@ -163,6 +163,7 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
             Button(
                 onClick = {
                     val listData = ListData(
+                        id = "",
                         name = if ("" == inputText) context.getString(R.string.new_list) else inputText,
                         userId = UserUtils.getUserId(context),
                         isDelete = false,
