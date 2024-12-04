@@ -20,12 +20,14 @@ import androidx.navigation.compose.rememberNavController
 import com.smartshop.ui.components.BottomNavigationBar
 import com.smartshop.ui.components.BottomNavigationItem
 import com.smartshop.ui.screens.CreateListScreen
+import com.smartshop.ui.screens.CreateListitemScreen
 import com.smartshop.ui.screens.ListScreen
 import com.smartshop.ui.screens.ListsScreen
 import com.smartshop.ui.screens.ProfileScreen
 import com.smartshop.ui.screens.TrashScreen
 import com.smartshop.ui.screens.WeatherScreen
 import com.smartshop.ui.viewmodel.ListViewModel
+import com.smartshop.ui.viewmodel.ListitemViewModel
 
 @Composable
 fun Navigation(
@@ -64,7 +66,7 @@ fun Navigation(
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != Screen.CreateListScreen.route) {  // Якщо це не CreateListScreen, показуємо меню
+            if (currentRoute != Screen.CreateListScreen.route && currentRoute != Screen.ListScreen.route && currentRoute != Screen.CreateListitemScreen.route) {
                 BottomNavigationBar(
                     items = items,
                     selectedItemIndex = selectedItemIndex,
@@ -126,6 +128,13 @@ fun Navigation(
                 navController = navController,
                 viewModel = ListViewModel(),
             ) }
+            composable(Screen.CreateListitemScreen.route) { backStackEntry ->
+                val listId = backStackEntry.arguments?.getString("listId") ?: ""
+                CreateListitemScreen(
+                    navController = navController,
+                    viewModel = ListitemViewModel(),
+                    listId = listId)
+            }
             composable(Screen.WeatherScreen.route) { WeatherScreen() }
             composable(Screen.ProfileScreen.route) {
                 ProfileScreen(
