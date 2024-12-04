@@ -9,8 +9,10 @@
     <string name="back">Назад</string>
     <string name="cancel">Скасувати</string>
     <string name="edit">Редагувати</string>
+    <string name="save">Зберегти</string>
     <string name="delete">Видалити</string>
     <string name="rename">Перейменувати</string>
+    <string name="rename_list">Перейменувати список</string>
     <string name="lists">Списки</string>
     <string name="item_removed">Видалено 1 елемент</string>
     <string name="weather">Погода</string>

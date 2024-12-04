@@ -166,7 +166,7 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                         id = "",
                         name = if ("" == inputText) context.getString(R.string.new_list) else inputText,
                         userId = UserUtils.getUserId(context),
-                        isDelete = false,
+                        delete = false,
                         createdAt = null,
                         updatedAt = null,
                     )

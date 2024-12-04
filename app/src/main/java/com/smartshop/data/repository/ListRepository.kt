@@ -21,12 +21,13 @@ class ListRepository {
                 listData
             }
 
-            lists
+            lists.filterNot { it.delete == true }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
         }
     }
+
 
     suspend fun getLists(userId: String): List<ListData> {
         return try {
@@ -43,7 +44,7 @@ class ListRepository {
                 listData
             }
 
-            lists
+            lists.filterNot { it.delete == true }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
@@ -60,18 +61,30 @@ class ListRepository {
         newListRef.setValue(newListWithId).await()
     }
 
-
-    suspend fun readList(listId: String): ListData? {
-        val snapshot = database.child(listId).get().await()
-        return snapshot.getValue(ListData::class.java)
+    suspend fun showList(listId: String): ListData {
+        return try {
+            val snapshot = database.child(listId).get().await()
+            snapshot.getValue(ListData::class.java) ?: ListData("", "", "", false, null, null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ListData("", "", "", false, null, null)
+        }
     }
 
     suspend fun updateList(listId: String, updatedList: ListData) {
         database.child(listId).setValue(updatedList).await()
     }
 
-    suspend fun deleteList(listId: String) {
+    suspend fun forceDeleteList(listId: String) {
         database.child(listId).removeValue().await()
+    }
+
+    suspend fun deleteList(listId: String) {
+        database.child(listId).child("delete").setValue(true).await()
+    }
+
+    suspend fun undoList(listId: String) {
+        database.child(listId).child("delete").setValue(false).await()
     }
 
     suspend fun getAllLists(): List<ListData> {
