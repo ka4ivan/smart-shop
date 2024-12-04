@@ -2,7 +2,6 @@ package com.smartshop.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -95,6 +94,8 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                         color = LocalCustomColors.current.textSecondary
                     )
                 },
+                maxLines = 1,
+                singleLine = true,
                 textStyle = LocalTextStyle.current.copy(fontWeight = FontWeight.ExtraBold),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -129,7 +130,6 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                 stringResource(id = R.string.trip),
                 stringResource(id = R.string.supermarket),
                 stringResource(id = R.string.home),
-                stringResource(id = R.string.travel)
             )
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),

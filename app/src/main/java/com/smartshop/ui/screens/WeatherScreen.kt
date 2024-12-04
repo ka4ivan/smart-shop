@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.smartshop.data.api.WeatherApiService
 import com.smartshop.data.model.WeatherResponse
-import com.smartshop.ui.theme.DarkGrayLight
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.compose.ui.platform.LocalContext
@@ -29,9 +28,9 @@ import androidx.compose.material3.*
 import com.smartshop.BuildConfig
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import com.smartshop.ui.theme.BtnSuggestionBackgroundLight
-import com.smartshop.ui.theme.FullWhite
-import com.smartshop.ui.theme.WhiteLight
+import androidx.compose.ui.res.stringResource
+import com.smartshop.R
+import com.smartshop.ui.theme.LocalCustomColors
 
 @Composable
 fun WeatherScreen(modifier: Modifier = Modifier) {
@@ -44,7 +43,7 @@ fun WeatherScreen(modifier: Modifier = Modifier) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
                 text = "No internet connection",
-                color = DarkGrayLight,
+                color = LocalCustomColors.current.text,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(16.dp),
@@ -111,14 +110,14 @@ fun WeatherScreen(modifier: Modifier = Modifier) {
                             onClick = { showCityInputDialog = true },
                             modifier = Modifier.height(50.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = BtnSuggestionBackgroundLight
+                                containerColor = LocalCustomColors.current.inputBackground
                             )
                         ) {
                             Text(
-                                text = "$city",
+                                text = city,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = FullWhite
+                                color = LocalCustomColors.current.text,
                             )
                         }
                     }
@@ -143,12 +142,19 @@ fun WeatherScreen(modifier: Modifier = Modifier) {
                         Text(
                             text = "Weather in ${weather.location.name}, ${weather.location.country}",
                             fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = LocalCustomColors.current.text,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Temperature: ${weather.current.temp_c}°C")
+                        Text(
+                            text = "Temperature: ${weather.current.temp_c}°C",
+                            color = LocalCustomColors.current.text
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = weather.current.condition.text)
+                        Text(
+                            text = weather.current.condition.text,
+                            color = LocalCustomColors.current.text,
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
                         Image(
                             painter = rememberAsyncImagePainter("https:${weather.current.condition.icon}"),
@@ -168,7 +174,7 @@ fun WeatherScreen(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "City not found",
+                        text = stringResource(R.string.city_not_found),
                         color = Color.Red,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
@@ -187,15 +193,15 @@ fun CityInputDialog(onCitySelected: (String) -> Unit, onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Enter City",
-                color = Color.White
+                text = stringResource(R.string.enter_city),
+                color = LocalCustomColors.current.text
             )
         },
         text = {
             OutlinedTextField(
                 value = cityInput,
                 onValueChange = { cityInput = it },
-                label = { Text("City") },
+                label = { Text(stringResource(R.string.city)) },
                 modifier = Modifier.fillMaxWidth()
             )
         },
@@ -207,12 +213,12 @@ fun CityInputDialog(onCitySelected: (String) -> Unit, onDismiss: () -> Unit) {
                     }
                 }
             ) {
-                Text("OK")
+                Text(stringResource(R.string.save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

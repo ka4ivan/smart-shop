@@ -1,12 +1,17 @@
 package com.smartshop.data.model
 
-//import com.google.firebase.Timestamp
+import com.google.firebase.database.ServerValue
 
 data class ListitemData(
+    val id: String,
     val name: String,
-    val qty: Float,
+    val qty: Double,
     val unit: String,
-    val isDelete: Boolean,
+    val delete: Boolean,
     val isCheck: Boolean,
-//    val createdAt: Timestamp,
-)
+    val listId: String,
+    val createdAt: Any?,
+    val updatedAt: Any?
+) {
+    constructor() : this("","", 0.0, "", false, false, "", ServerValue.TIMESTAMP, ServerValue.TIMESTAMP)
+}
