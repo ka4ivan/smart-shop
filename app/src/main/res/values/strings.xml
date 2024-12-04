@@ -19,6 +19,9 @@
     <string name="item_removed">Видалено 1 елемент</string>
     <string name="clear_purchased_items">Очистити придбані товари</string>
     <string name="uncheck_all_items">Зняти відмітки з всіх пунктів</string>
+    <string name="enter_city">Введіть місто</string>
+    <string name="city_not_found">Місто не знайдено</string>
+    <string name="city">Місто</string>
     <string name="weather">Погода</string>
     <string name="profile">Профіль</string>
     <string name="what_do_you_need_to_buy">Що вам потрібно купити?</string>

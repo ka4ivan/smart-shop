@@ -199,11 +199,10 @@ fun CreateListitemScreen(navController: NavController, viewModel: ListitemViewMo
                 stringResource(R.string.travel_bag)
             )
 
-            // Список пропозицій, який заповнює решту простору
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f) // Використовуємо weight для заповнення простору
+                    .weight(1f)
                     .padding(vertical = 8.dp, horizontal = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -247,7 +246,7 @@ fun CreateListitemScreen(navController: NavController, viewModel: ListitemViewMo
                                     modifier = Modifier
                                         .size(30.dp)
                                         .background(
-                                            color = LocalCustomColors.current.btnSuggestionBackground,
+                                            color = LocalCustomColors.current.btnAddListitem,
                                             shape = CircleShape
                                         ),
                                     contentAlignment = Alignment.Center,

@@ -59,6 +59,8 @@ val BtnSaveBackgroundLight = Color(0xFF2B9C1C)
 val BtnSaveBackgroundDark = Color(0xFF353535)
 val BtnSaveTextLight = Color(0xFFFFFFFF)
 val BtnSaveTextDark = Color(0xFF2B9C1C)
+val BtnAddListitemLight = Color(0xFFBFBFBF)
+val BtnAddListitemDark = Color(0xFF353535)
 
 val BlueSky = Color(0xFF70AEF5)
 val Red = Color(0xFFBF2E1C)
