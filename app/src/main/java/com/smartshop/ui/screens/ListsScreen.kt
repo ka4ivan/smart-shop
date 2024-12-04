@@ -9,10 +9,13 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -61,6 +64,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
     }
 
     var menuVisible by remember { mutableStateOf(false) } // Відображення меню
+    var renameSheetVisible by remember { mutableStateOf(false) }
     var selectedList by remember { mutableStateOf<ListData?>(null) } // Вибраний список
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
@@ -71,16 +75,15 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
 
     LaunchedEffect(showUndoNotification) {
         if (showUndoNotification) {
-            delay(3000)
-            if (!isDeleteCancelled) {
                 deletedList?.let { list ->
                     viewModel.deleteList(list.id)
                     coroutineScope.launch {
                         lists = viewModel.getListsOnce(userId)
                     }
                 }
+
+                delay(3000)
                 showUndoNotification = false
-            }
         }
     }
 
@@ -88,6 +91,22 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
     fun cancelDelete() {
         isDeleteCancelled = true
         showUndoNotification = false
+        deletedList?.let { list ->
+            viewModel.undoList(list.id)
+            coroutineScope.launch {
+                lists = viewModel.getListsOnce(userId)
+            }
+        }
+        coroutineScope.launch {
+            lists = viewModel.getListsOnce(userId)
+        }
+    }
+
+    // Функція для оновлення імені списку
+    fun renameList(newName: String) {
+        selectedList?.let { list ->
+            viewModel.updateList(list.id, list.copy(name = newName))
+        }
         coroutineScope.launch {
             lists = viewModel.getListsOnce(userId)
         }
@@ -224,6 +243,9 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                                     RoundedCornerShape(8.dp)
                                 )
                                 .padding(start = 15.dp, top = 10.dp, end = 10.dp, bottom = 15.dp)
+                                .clickable {
+                                    navController.navigate("list_screen/${list.id}")
+                                }
                         ) {
                             Box(
                                 modifier = Modifier
@@ -301,6 +323,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                             menuVisible = false
                         },
                         sheetState = sheetState,
+                        windowInsets = WindowInsets(0.dp, 0.dp, 0.dp, (-3).dp)
                     ) {
                         Column(
                             modifier = Modifier
@@ -313,7 +336,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                                 onClick = {
                                     coroutineScope.launch { sheetState.hide() }
                                     menuVisible = false
-                                    // Логіка перейменування
+                                    renameSheetVisible = true
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
@@ -378,6 +401,18 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                         }
                     }
                 }
+
+                // Діалогове вікно для перейменування
+                if (renameSheetVisible) {
+                    RenameBottomSheet(
+                        listName = selectedList?.name ?: "",
+                        onDismiss = { renameSheetVisible = false },
+                        onRename = { newName ->
+                            renameList(newName)
+                            renameSheetVisible = false
+                        }
+                    )
+                }
             }
         }
 
@@ -437,6 +472,91 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                     colors = ButtonDefaults.buttonColors(containerColor = BtnAddBackgroundDark, contentColor = BlueSky),
                 ) {
                     Text(text = stringResource(R.string.cancel).uppercase(), fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RenameBottomSheet(
+    listName: String,
+    onDismiss: () -> Unit,
+    onRename: (String) -> Unit
+) {
+    var newName by remember { mutableStateOf(listName) }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        windowInsets = WindowInsets(0.dp, 0.dp, 0.dp, (-3).dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.rename_list),
+                color = LocalCustomColors.current.text,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            OutlinedTextField(
+                value = newName,
+                onValueChange = { newName = it },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+                    .border(
+                        width = 2.dp,
+                        color = LocalCustomColors.current.green,
+                        shape = MaterialTheme.shapes.medium.copy(CornerSize(12.dp))
+                    ),
+                textStyle = LocalTextStyle.current.copy(fontWeight = FontWeight.ExtraBold, fontSize = 20.sp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = LocalCustomColors.current.inputBackground,
+                    focusedBorderColor = LocalCustomColors.current.green,
+                    unfocusedBorderColor = LocalCustomColors.current.green,
+                    focusedTextColor = LocalCustomColors.current.text,
+                    unfocusedTextColor = LocalCustomColors.current.text,
+                ),
+                shape = MaterialTheme.shapes.medium.copy(CornerSize(12.dp)),
+                placeholder = { Text(text = stringResource(R.string.rename_list)) },
+            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp)
+            ) {
+                TextButton(onClick = onDismiss) {
+                    Text(
+                        text = stringResource(R.string.cancel).uppercase(),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        onRename(newName)
+                        onDismiss()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LocalCustomColors.current.btnSaveBackground,
+                        contentColor = LocalCustomColors.current.btnSaveText
+                    )
+                ) {
+                    Text(
+                        text = stringResource(R.string.save).uppercase(),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
                 }
             }
         }

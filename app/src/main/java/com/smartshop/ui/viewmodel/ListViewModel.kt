@@ -19,6 +19,10 @@ class ListViewModel : ViewModel() {
         return repository.getListsOnce(userId)
     }
 
+    suspend fun showList(listId: String): ListData {
+        return repository.showList(listId)
+    }
+
     fun fetchAllLists() {
         viewModelScope.launch {
             _lists.value = repository.getAllLists()
@@ -47,9 +51,23 @@ class ListViewModel : ViewModel() {
         }
     }
 
+    fun forceDeleteList(listId: String) {
+        viewModelScope.launch {
+            repository.forceDeleteList(listId)
+            fetchAllLists()
+        }
+    }
+
     fun deleteList(listId: String) {
         viewModelScope.launch {
             repository.deleteList(listId)
+            fetchAllLists()
+        }
+    }
+
+    fun undoList(listId: String) {
+        viewModelScope.launch {
+            repository.undoList(listId)
             fetchAllLists()
         }
     }

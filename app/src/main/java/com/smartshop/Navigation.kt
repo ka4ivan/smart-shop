@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.smartshop.ui.components.BottomNavigationBar
 import com.smartshop.ui.components.BottomNavigationItem
 import com.smartshop.ui.screens.CreateListScreen
+import com.smartshop.ui.screens.ListScreen
 import com.smartshop.ui.screens.ListsScreen
 import com.smartshop.ui.screens.ProfileScreen
 import com.smartshop.ui.screens.TrashScreen
@@ -114,6 +115,13 @@ fun Navigation(
                 navController = navController,
                 viewModel = ListViewModel(),
             ) }
+            composable("list_screen/{listId}") { backStackEntry ->
+                val listId = backStackEntry.arguments?.getString("listId") ?: ""
+                ListScreen(
+                    navController = navController,
+                    viewModel = ListViewModel(),
+                    listId = listId)
+            }
             composable(Screen.CreateListScreen.route) { CreateListScreen(
                 navController = navController,
                 viewModel = ListViewModel(),

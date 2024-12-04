@@ -6,7 +6,7 @@ data class ListData(
     val id: String,
     val name: String,
     val userId: String,
-    val isDelete: Boolean,
+    val delete: Boolean,
     val createdAt: Any?,
     val updatedAt: Any?
 ) {
