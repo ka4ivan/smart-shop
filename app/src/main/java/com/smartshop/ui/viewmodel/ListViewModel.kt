@@ -15,6 +15,10 @@ class ListViewModel : ViewModel() {
     private val _lists = MutableStateFlow<List<ListData>>(emptyList())
     val lists: StateFlow<List<ListData>> = _lists
 
+    suspend fun getListsOnce(userId: String): List<ListData> {
+        return repository.getListsOnce(userId)
+    }
+
     fun fetchAllLists() {
         viewModelScope.launch {
             _lists.value = repository.getAllLists()

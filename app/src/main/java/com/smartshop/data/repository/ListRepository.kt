@@ -8,6 +8,26 @@ import kotlinx.coroutines.tasks.await
 class ListRepository {
     private val database = FirebaseDatabase.getInstance("https://lntu-94305-default-rtdb.europe-west1.firebasedatabase.app").reference.child("lists")
 
+    suspend fun getListsOnce(userId: String): List<ListData> {
+        return try {
+            val snapshot = database
+                .orderByChild("userId")
+                .equalTo(userId)
+                .get()
+                .await()
+
+            val lists = snapshot.children.mapNotNull {
+                val listData = it.getValue(ListData::class.java)
+                listData
+            }
+
+            lists
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
     suspend fun getLists(userId: String): List<ListData> {
         return try {
             Log.d("ListRepository", "Fetching lists for userId: $userId")
@@ -18,17 +38,13 @@ class ListRepository {
                 .get()
                 .await()
 
-//            Log.d("ListRepository", "Snapshot children count: ${snapshot.childrenCount}")
-
             val lists = snapshot.children.mapNotNull {
                 val listData = it.getValue(ListData::class.java)
                 listData
             }
-            Log.d("ListRepository", "Lists: $lists")
 
             lists
         } catch (e: Exception) {
-            Log.e("ListRepository", "Error fetching lists: ${e.message}")
             e.printStackTrace()
             emptyList()
         }
@@ -36,11 +52,14 @@ class ListRepository {
 
     suspend fun createList(list: ListData) {
         val timestamp = System.currentTimeMillis()
-
         val listWithTimestamp = list.copy(createdAt = timestamp, updatedAt = timestamp)
+
         val newListRef = database.push()
-        newListRef.setValue(listWithTimestamp).await()
+        val newListWithId = listWithTimestamp.copy(id = newListRef.key ?: "")
+
+        newListRef.setValue(newListWithId).await()
     }
+
 
     suspend fun readList(listId: String): ListData? {
         val snapshot = database.child(listId).get().await()

@@ -7,9 +7,12 @@
     <string name="hello">Привіт✌️</string>
     <string name="menu">Меню</string>
     <string name="back">Назад</string>
+    <string name="cancel">Скасувати</string>
     <string name="edit">Редагувати</string>
     <string name="delete">Видалити</string>
+    <string name="rename">Перейменувати</string>
     <string name="lists">Списки</string>
+    <string name="item_removed">Видалено 1 елемент</string>
     <string name="weather">Погода</string>
     <string name="profile">Профіль</string>
     <string name="lets_plan_your_shopping">Давайте сплануємо ваші покупки!</string>

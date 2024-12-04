@@ -25,6 +25,10 @@ data class CustomColors(
     val inputBackground: Color,
     val blackWhite: Color,
     val whiteBlack: Color,
+    val progressBarBackground: Color,
+    val listBackground: Color,
+    val listMenu: Color,
+    val textThird: Color,
 )
 val LocalCustomColors = staticCompositionLocalOf {
     CustomColors(
@@ -41,6 +45,10 @@ val LocalCustomColors = staticCompositionLocalOf {
         inputBackground = Color.Unspecified,
         blackWhite = Color.Unspecified,
         whiteBlack = Color.Unspecified,
+        progressBarBackground = Color.Unspecified,
+        listBackground = Color.Unspecified,
+        listMenu = Color.Unspecified,
+        textThird = Color.Unspecified,
     )
 }
 
@@ -92,6 +100,10 @@ fun SmartShopTheme(
             inputBackground = InputBackgroundDark,
             blackWhite = BlackWhiteDark,
             whiteBlack = WhiteBlackDark,
+            progressBarBackground = ProgressBarBackgroundDark,
+            listBackground = ListBackgroundDark,
+            listMenu = ListMenuDark,
+            textThird = TextThirdDark,
         )
     } else {
         CustomColors(
@@ -108,6 +120,10 @@ fun SmartShopTheme(
             inputBackground = InputBackgroundLight,
             blackWhite = BlackWhiteLight,
             whiteBlack = WhiteBlackLight,
+            progressBarBackground = ProgressBarBackgroundLight,
+            listBackground = ListBackgroundLight,
+            listMenu = ListMenuLight,
+            textThird = TextThirdLight,
         )
     }
 
