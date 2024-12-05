@@ -1,8 +1,10 @@
 package com.smartshop.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
@@ -15,7 +17,11 @@ import androidx.compose.ui.unit.sp
 import com.smartshop.R
 import com.smartshop.ui.theme.LocalCustomColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,28 +46,42 @@ fun ProfileScreen(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.align(Alignment.Center).padding(top = 80.dp)
         ) {
             Button(
                 onClick = { isBottomSheetVisible = true },
-                modifier = Modifier.fillMaxWidth(0.8f),
+                modifier = Modifier.fillMaxWidth(0.9f),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = LocalCustomColors.current.btnSuggestionBackground, // Колір фону кнопки
-                    contentColor = LocalCustomColors.current.text // Колір тексту на кнопці
+                    containerColor = LocalCustomColors.current.btnSuggestionBackground,
+                    contentColor = LocalCustomColors.current.text
                 )
             ) {
-                Text(
-                    text = stringResource(R.string.change_theme),
-                    fontSize = 16.sp,
-                    color = LocalCustomColors.current.text // Колір тексту
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.pallet),
+                        contentDescription = stringResource(R.string.close).uppercase(),
+                        modifier = Modifier.size(28.dp),
+                        tint = LocalCustomColors.current.text
+                    )
+                    Spacer(modifier = Modifier.width(45.dp))
+                    Text(
+                        text = stringResource(R.string.change_theme),
+                        fontSize = 18.sp,
+                        color = LocalCustomColors.current.text
+                    )
+                }
             }
         }
     }
 
     if (isBottomSheetVisible) {
         ModalBottomSheet(
-            onDismissRequest = { isBottomSheetVisible = false }
+            onDismissRequest = { isBottomSheetVisible = false },
+            windowInsets = WindowInsets(0.dp, 0.dp, 0.dp, (-3).dp)
         ) {
             BottomSheetContent(
                 currentTheme = currentTheme,
@@ -96,23 +116,18 @@ fun BottomSheetContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.dark_theme),
+                text = stringResource(R.string.dark_theme).uppercase(),
                 fontSize = 20.sp,
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
+                color = LocalCustomColors.current.text,
+                fontWeight = FontWeight.ExtraBold,
             )
-            IconButton(onClick = onClose) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = stringResource(R.string.close_uppercase),
-                    tint = LocalCustomColors.current.text
-                )
-            }
         }
 
         listOf(
-            stringResource(R.string.on_uppercase) to true,
-            stringResource(R.string.off_uppercase) to false
+            stringResource(R.string.on).uppercase() to true,
+            stringResource(R.string.off).uppercase() to false
         ).forEach { (label, value) ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -126,8 +141,9 @@ fun BottomSheetContent(
             ) {
                 Text(
                     text = label,
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     modifier = Modifier.weight(1f),
+                    fontWeight = FontWeight.Bold,
                     color = LocalCustomColors.current.text
                 )
                 RadioButton(
