@@ -53,10 +53,6 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-//                .background(
-//                    color = LocalCustomColors.current.listBackground,
-//                    shape = RoundedCornerShape(0.dp)
-//                ) TODO Подумати чи робити
                     .padding(horizontal = 16.dp, vertical = 5.dp)
             ) {
                 Row(

@@ -19,4 +19,20 @@ class ListitemViewModel : ViewModel() {
             repository.createListitem(listitem)
         }
     }
+
+    fun removeListitem(name: String, listId: String, qty: Double = 1.0) {
+        viewModelScope.launch {
+            repository.removeListitem(name, listId, qty)
+        }
+    }
+
+    fun deleteListitem(listitem: ListitemData) {
+        viewModelScope.launch {
+//            repository.deleteListitem(listitem)
+        }
+    }
+
+    suspend fun getListitemsOnce(listitemId: String): List<ListitemData> {
+        return repository.getListitemsOnce(listitemId)
+    }
 }

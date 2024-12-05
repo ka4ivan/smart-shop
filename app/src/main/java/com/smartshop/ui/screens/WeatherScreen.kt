@@ -92,7 +92,9 @@ fun WeatherScreen(modifier: Modifier = Modifier) {
 
         if (isLoading) {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(
+                    color = LocalCustomColors.current.green
+                )
             }
         } else if (errorMessage != null) {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
