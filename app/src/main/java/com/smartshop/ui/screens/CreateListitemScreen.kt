@@ -13,12 +13,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,6 +30,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +57,15 @@ import com.smartshop.ui.viewmodel.ListitemViewModel
 @Composable
 fun CreateListitemScreen(navController: NavController, viewModel: ListitemViewModel, listId: String, modifier: Modifier = Modifier) {
     var inputValue: String by remember { mutableStateOf("") }
+    val existingItems = remember { mutableStateOf<List<ListitemData>>(emptyList()) }
+    val loading = remember { mutableStateOf(true) }
+
+    LaunchedEffect(listId) {
+        existingItems.value = viewModel.getListitemsOnce(listId)
+        loading.value = false  // Set loading to false once data is loaded
+    }
+
+    val existingListitems = existingItems.value
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -115,7 +127,7 @@ fun CreateListitemScreen(navController: NavController, viewModel: ListitemViewMo
                 }
             }
 
-            val suggestions = listOf(
+            val allSuggestions = listOf(
                 stringResource(R.string.bread),
                 stringResource(R.string.milk),
                 stringResource(R.string.cheese),
@@ -199,74 +211,208 @@ fun CreateListitemScreen(navController: NavController, viewModel: ListitemViewMo
                 stringResource(R.string.travel_bag)
             )
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(vertical = 8.dp, horizontal = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(suggestions) { suggestion ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                    ) {
-                        Button(
-                            onClick = {
-                                val newItem = ListitemData(
-                                    id = "",
-                                    name = suggestion,
-                                    qty = 1.0,
-                                    unit = "unit",
-                                    delete = false,
-                                    isCheck = false,
-                                    listId = listId,
-                                    createdAt = ServerValue.TIMESTAMP,
-                                    updatedAt = ServerValue.TIMESTAMP
-                                )
+            val filteredSuggestions = remember(inputValue) {
+                allSuggestions.filter { it.contains(inputValue, ignoreCase = true) }
+            }
 
-                                viewModel.createListitem(newItem)
-                            },
-                            contentPadding = PaddingValues(vertical = 0.dp, horizontal = 16.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Transparent
-                            ),
-                            shape = MaterialTheme.shapes.medium.copy(CornerSize(16.dp))
-                        ) {
+            if (loading.value) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center)
+                ) {
+                    CircularProgressIndicator(
+                        color = LocalCustomColors.current.green
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(vertical = 8.dp, horizontal = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (filteredSuggestions.isEmpty() && inputValue.isNotBlank()) {
+                        val existingItem = existingListitems.find { it.name == inputValue && it.listId == listId }
+
+                        item {
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(30.dp)
-                                        .background(
-                                            color = LocalCustomColors.current.btnAddListitem,
-                                            shape = CircleShape
-                                        ),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.plus_skiny),
-                                        contentDescription = "Add product",
-                                        modifier = Modifier.size(22.dp),
-                                        tint = Color.White
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = suggestion,
-                                    fontSize = 16.sp,
-                                    color = LocalCustomColors.current.text,
-                                    fontWeight = FontWeight.Bold
+                                val isAdded = remember { mutableStateOf(existingItem != null) }
+                                val qty = remember { mutableStateOf(existingItem?.qty ?: 0.0) }
+
+                                SuggestionButton(
+                                    text = inputValue,
+                                    isAdded = isAdded.value,
+                                    qty = qty.value,
+                                    onIncreaseClick = {
+                                        qty.value += 1.0
+                                        val updatedItem = existingItem?.copy(qty = qty.value)
+                                            ?: ListitemData(
+                                                id = "",
+                                                name = inputValue,
+                                                qty = qty.value,
+                                                unit = "",
+                                                delete = false,
+                                                isCheck = false,
+                                                listId = listId,
+                                                createdAt = ServerValue.TIMESTAMP,
+                                                updatedAt = ServerValue.TIMESTAMP
+                                            )
+                                        viewModel.createListitem(updatedItem)
+                                        isAdded.value = true
+                                    },
+                                    onDecreaseClick = {
+                                        qty.value -= 1.0
+                                        if (qty.value <= 0.0) {
+                                            isAdded.value = false
+                                        }
+                                        viewModel.removeListitem(inputValue, listId, 1.0)
+                                    }
                                 )
                             }
                         }
+                    } else {
+                        items(filteredSuggestions) { suggestion ->
+                            val existingItem = existingListitems.find { it.name == suggestion && it.listId == listId }
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
+                            ) {
+                                val isAdded = remember { mutableStateOf(existingItem != null) }
+                                val qty = remember { mutableStateOf(existingItem?.qty ?: 0.0) }
+
+                                SuggestionButton(
+                                    text = suggestion,
+                                    isAdded = isAdded.value,
+                                    qty = qty.value,
+                                    onIncreaseClick = {
+                                        qty.value += 1.0
+                                        val updatedItem = existingItem?.copy(qty = qty.value)
+                                            ?: ListitemData(
+                                                id = "",
+                                                name = suggestion,
+                                                qty = qty.value,
+                                                unit = "",
+                                                delete = false,
+                                                isCheck = false,
+                                                listId = listId,
+                                                createdAt = ServerValue.TIMESTAMP,
+                                                updatedAt = ServerValue.TIMESTAMP
+                                            )
+                                        viewModel.createListitem(updatedItem)
+                                        isAdded.value = true
+                                    },
+                                    onDecreaseClick = {
+                                        qty.value -= 1.0
+                                        if (qty.value <= 0.0) {
+                                            isAdded.value = false
+                                        }
+                                        viewModel.removeListitem(suggestion, listId, 1.0)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SuggestionButton(
+    text: String,
+    isAdded: Boolean,
+    qty: Double,
+    onIncreaseClick: () -> Unit,
+    onDecreaseClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onIncreaseClick,
+        contentPadding = PaddingValues(vertical = 0.dp, horizontal = 16.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent
+        ),
+        shape = MaterialTheme.shapes.medium.copy(CornerSize(16.dp))
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Ліва частина кнопки
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(
+                            color = if (isAdded) LocalCustomColors.current.blue
+                            else LocalCustomColors.current.btnSuggestionBackground,
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.plus_skiny),
+                        contentDescription = if (isAdded) "Already added" else "Add product",
+                        modifier = Modifier.size(22.dp),
+                        tint = if (isAdded) LocalCustomColors.current.whiteBlack else Color.White
+                    )
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = text,
+                    fontSize = 16.sp,
+                    color = LocalCustomColors.current.text,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            // Права частина кнопки
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (qty > 1) {
+                    Text(
+                        text = qty.toString().removeSuffix(".0"),
+                        fontSize = 14.sp,
+                        color = LocalCustomColors.current.text,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconButton(
+                        onClick = onDecreaseClick,
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.minus),
+                            contentDescription = "Decrease quantity",
+                            tint = Color.Red
+                        )
+                    }
+                } else if (qty > 0.1 && isAdded) {
+                    IconButton(
+                        onClick = onDecreaseClick,
+                        modifier = Modifier.size(14.dp)
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.cancel),
+                            contentDescription = "Remove item",
+                            tint = Color.Red
+                        )
                     }
                 }
             }

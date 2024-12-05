@@ -13,5 +13,5 @@ data class ListitemData(
     val createdAt: Any?,
     val updatedAt: Any?
 ) {
-    constructor() : this("","", 0.0, "", false, false, "", ServerValue.TIMESTAMP, ServerValue.TIMESTAMP)
+    constructor() : this("","", 1.0, "", false, false, "", ServerValue.TIMESTAMP, ServerValue.TIMESTAMP)
 }

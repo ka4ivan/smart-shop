@@ -133,7 +133,8 @@ fun Navigation(
                 CreateListitemScreen(
                     navController = navController,
                     viewModel = ListitemViewModel(),
-                    listId = listId)
+                    listId = listId,
+                )
             }
             composable(Screen.WeatherScreen.route) { WeatherScreen() }
             composable(Screen.ProfileScreen.route) {
