@@ -11,6 +11,8 @@
     <string name="close">Закрити</string>
     <string name="on">Увімкнути</string>
     <string name="off">Вимкнути</string>
+    <string name="qty">Кількість</string>
+    <string name="unit">Одиниця виміру</string>
     <string name="menu">Меню</string>
     <string name="back">Назад</string>
     <string name="cancel">Скасувати</string>

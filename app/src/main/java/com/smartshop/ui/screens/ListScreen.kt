@@ -1,19 +1,32 @@
 package com.smartshop.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -32,6 +45,7 @@ import com.smartshop.data.model.ListData
 import com.smartshop.data.model.ListitemData
 import com.smartshop.ui.theme.LocalCustomColors
 import com.smartshop.ui.viewmodel.ListViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: String, modifier: Modifier = Modifier) {
@@ -39,16 +53,30 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
     var menuExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    var listItems = emptyList<ListitemData>()
+    var listitems by remember { mutableStateOf<List<ListitemData>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) } // Додаємо змінну для завантаження
 
     LaunchedEffect(listId) {
+        isLoading = true
+        listitems = viewModel.getListitems(listId)
         listData.value = viewModel.showList(listId.toString())
+        isLoading = false
     }
 
     val list = listData.value
 
     Box(modifier = modifier.fillMaxSize()) {
-        if (list != null) {
+        if (isLoading) {
+            // Показуємо індикатор завантаження
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = LocalCustomColors.current.green
+                )
+            }
+        } else if (list != null) {
             // Верх
             Box(
                 modifier = Modifier
@@ -165,7 +193,7 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
                 }
             }
 
-            if (listItems.isEmpty()) {
+            if (listitems.isEmpty()) {
                 val images = listOf(
                     "carrot", "carrot_2", "beetroot", "broccoli", "granola", "kawaii", "onion",
                     "pepper", "pumpkin", "salad", "watermelon", "coffee"
@@ -205,9 +233,8 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
                     )
                 }
             } else {
-
+                CheckableList(listitems = listitems, viewModel = viewModel, navController = navController)
             }
-
 
             // Кнопка для додавання нового списку
             ExtendedFloatingActionButton(
@@ -237,5 +264,170 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
                 )
             }
         }
+    }
+}
+
+@Composable
+fun CheckableList(listitems: List<ListitemData>, viewModel: ListViewModel, navController: NavController) {
+    val mutableListItems = remember { mutableStateListOf<ListitemData>().apply { addAll(listitems) } }
+
+    LazyColumn(modifier = Modifier.padding(top = 50.dp)) {
+        items(
+            items = mutableListItems,
+            key = { it.id }
+        ) { listItem ->
+            SwipeToDeleteContainer(
+                item = listItem,
+                onDelete = { itemToRemove ->
+                    mutableListItems.remove(itemToRemove)
+                    viewModel.deleteListitem(itemToRemove.id)
+                }
+            ) { item ->
+                // Вміст рядка з чекбоксом
+                CheckableListItem(
+                    listitem = item,
+                    onCheckedChange = { updatedItem ->
+                        viewModel.updateListitem(item.id, updatedItem)
+                    },
+                    navController = navController
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CheckableListItem(
+    listitem: ListitemData,
+    onCheckedChange: (ListitemData) -> Unit,
+    navController: NavController,
+) {
+    var checked by remember { mutableStateOf(listitem.isCheck) }
+    val animatedScale by animateFloatAsState(
+        targetValue = if (checked) 1.2f else 1f,
+        animationSpec = tween(durationMillis = 300)
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(if (checked) LocalCustomColors.current.background else LocalCustomColors.current.listBackground)
+            .padding(vertical = 15.dp, horizontal = 10.dp)
+            .clickable { navController.navigate("listitem_screen/${listitem.id}") },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(20.dp)
+                .clip(CircleShape)
+                .border(2.dp, if (checked) LocalCustomColors.current.background else LocalCustomColors.current.blue, CircleShape)
+                .background(LocalCustomColors.current.background, shape = CircleShape)
+                .graphicsLayer(scaleX = animatedScale, scaleY = animatedScale)
+                .clickable {
+                    checked = !checked
+                    val updatedItem = listitem.copy(isCheck = checked)
+                    onCheckedChange(updatedItem)
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            if (checked) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.check),
+                    contentDescription = "Checked",
+                    tint = LocalCustomColors.current.green,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(20.dp))
+
+        Text(
+            text = listitem.name,
+            fontSize = 16.sp,
+            color = LocalCustomColors.current.text,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.weight(1f)
+        )
+
+        if (listitem.qty > 1) {
+            Text(
+                text = listitem.qty.toString().removeSuffix(".0") + " " + listitem.unit,
+                textAlign = TextAlign.End,
+                fontSize = 14.sp,
+                color = LocalCustomColors.current.textSecondary,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(end = 25.dp)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun <T> SwipeToDeleteContainer(
+    item: T,
+    onDelete: (T) -> Unit,
+    animationDuration: Int = 500,
+    content: @Composable (T) -> Unit
+) {
+    var isRemoved by remember { mutableStateOf(false) }
+    val state = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.EndToStart) {
+                isRemoved = true
+                true
+            } else {
+                false
+            }
+        }
+    )
+
+
+    LaunchedEffect(key1 = isRemoved) {
+        if (isRemoved) {
+            delay(animationDuration.toLong())
+            onDelete(item)
+        }
+    }
+
+    AnimatedVisibility(
+        visible = !isRemoved,
+        exit = shrinkVertically(
+            animationSpec = tween(durationMillis = animationDuration),
+            shrinkTowards = Alignment.Top
+        ) + fadeOut()
+    ) {
+        SwipeToDismiss(
+            state = state,
+            background = { DeleteBackground(swipeDismissState = state) },
+            dismissContent = { content(item) },
+            directions = setOf(SwipeToDismissBoxValue.EndToStart)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DeleteBackground(
+    swipeDismissState: SwipeToDismissBoxState
+) {
+    val color = when (swipeDismissState.targetValue) {
+        SwipeToDismissBoxValue.EndToStart -> Color.Red
+        else -> Color.Transparent
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color)
+            .padding(16.dp),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(R.drawable.trash),
+            contentDescription = null,
+            tint = Color.White
+        )
     }
 }

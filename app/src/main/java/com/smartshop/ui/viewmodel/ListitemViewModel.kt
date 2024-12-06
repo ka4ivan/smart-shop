@@ -20,15 +20,26 @@ class ListitemViewModel : ViewModel() {
         }
     }
 
+    suspend fun showListitem(listitemId: String): ListitemData {
+        return repository.showListitem(listitemId)
+    }
+
+    fun updateListitem(listitemId: String, updatedListitem: ListitemData) {
+        viewModelScope.launch {
+            repository.updateListitem(listitemId, updatedListitem)
+        }
+    }
+
+
     fun removeListitem(name: String, listId: String, qty: Double = 1.0) {
         viewModelScope.launch {
             repository.removeListitem(name, listId, qty)
         }
     }
 
-    fun deleteListitem(listitem: ListitemData) {
+    fun deleteListitem(listitemId: String) {
         viewModelScope.launch {
-//            repository.deleteListitem(listitem)
+            repository.deleteListitem(listitemId)
         }
     }
 

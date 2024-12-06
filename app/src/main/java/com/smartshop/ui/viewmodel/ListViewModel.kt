@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smartshop.data.model.ListData
+import com.smartshop.data.model.ListitemData
 import com.smartshop.data.repository.ListRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -69,6 +70,22 @@ class ListViewModel : ViewModel() {
         viewModelScope.launch {
             repository.undoList(listId)
             fetchAllLists()
+        }
+    }
+
+    suspend fun getListitems(listId: String): List<ListitemData> {
+        return repository.getListitems(listId)
+    }
+
+    fun updateListitem(listitemId: String, updatedListitem: ListitemData) {
+        viewModelScope.launch {
+            repository.updateListitem(listitemId, updatedListitem)
+        }
+    }
+
+    fun deleteListitem(listitemId: String) {
+        viewModelScope.launch {
+            repository.deleteListitem(listitemId)
         }
     }
 }

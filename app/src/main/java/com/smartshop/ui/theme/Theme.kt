@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 
 data class CustomColors(
     val bottomMenuBackground: Color,
+    val background: Color,
     val text: Color,
     val textSecondary: Color,
     val blue: Color,
@@ -35,6 +36,7 @@ data class CustomColors(
 )
 val LocalCustomColors = staticCompositionLocalOf {
     CustomColors(
+        background = Color.Unspecified,
         bottomMenuBackground = Color.Unspecified,
         text = Color.Unspecified,
         textSecondary = Color.Unspecified,
@@ -93,6 +95,7 @@ fun SmartShopTheme(
 
     val customColors = if (darkTheme) {
         CustomColors(
+            background = BackgroundDark,
             bottomMenuBackground = BackgroundBottomMenuDark,
             text = TextDark,
             textSecondary = TextSecondaryDark,
@@ -116,6 +119,7 @@ fun SmartShopTheme(
         )
     } else {
         CustomColors(
+            background = BackgroundLight,
             bottomMenuBackground = BackgroundBottomMenuLight,
             text = TextLight,
             textSecondary = TextSecondaryLight,

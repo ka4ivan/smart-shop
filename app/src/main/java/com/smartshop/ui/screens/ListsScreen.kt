@@ -38,6 +38,7 @@ import androidx.navigation.NavController
 import com.smartshop.R
 import com.smartshop.Screen
 import com.smartshop.data.model.ListData
+import com.smartshop.data.model.ListitemData
 import com.smartshop.data.utils.UserUtils
 import com.smartshop.ui.theme.BlueSky
 import com.smartshop.ui.theme.BtnAddBackgroundDark
@@ -229,6 +230,15 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
             ) {
                 LazyColumn {
                     items(lists) { list ->
+                        var listitems by remember { mutableStateOf<List<ListitemData>>(emptyList()) }
+
+                        LaunchedEffect(list.id) {
+                            listitems = viewModel.getListitems(list.id)
+                        }
+
+                        val checkedCount = listitems.count { it.isCheck }
+                        val uncheckedCount = listitems.count { !it.isCheck }
+
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -297,7 +307,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                                     Box(
                                         modifier = Modifier
                                             .fillMaxHeight()
-                                            .fillMaxWidth(fraction = 2.toFloat() / 7)
+                                            .fillMaxWidth(fraction = checkedCount.toFloat() / (checkedCount + uncheckedCount))
                                             .clip(RoundedCornerShape(3.dp))
                                             .background(LocalCustomColors.current.green)
                                     )
@@ -306,8 +316,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                                 Spacer(modifier = Modifier.width(8.dp))
 
                                 Text(
-                                    text = "2/7", // TODO отримати кількості
-//                                    text = "${list.completedTasks}/${list.totalTasks}",
+                                    text = "${checkedCount}/${checkedCount + uncheckedCount}",
                                     color = LocalCustomColors.current.text,
                                     fontWeight = FontWeight.Medium,
                                     fontSize = 14.sp
