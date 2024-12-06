@@ -68,7 +68,7 @@ fun Navigation(
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != Screen.CreateListScreen.route && currentRoute != Screen.ListScreen.route && currentRoute != Screen.CreateListitemScreen.route) {
+            if (currentRoute != Screen.CreateListScreen.route && currentRoute != Screen.ListScreen.route && currentRoute != Screen.CreateListitemScreen.route && currentRoute != Screen.ListitemScreen.route) {
                 BottomNavigationBar(
                     items = items,
                     selectedItemIndex = selectedItemIndex,
