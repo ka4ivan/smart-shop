@@ -1,5 +1,6 @@
 package com.smartshop.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,22 +18,45 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.background
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.draw.shadow
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.smartshop.R
 import com.smartshop.Screen
 import com.smartshop.ui.theme.LocalCustomColors
+import com.smartshop.ui.viewmodel.ListViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import com.smartshop.data.utils.UserUtils
 
 @Composable
-fun TrashScreen(navController: NavController, modifier: Modifier = Modifier) {
-    val trashLists = emptyList<String>() // TODO Отримати список видалених
+fun TrashScreen(navController: NavController, viewModel: ListViewModel, modifier: Modifier = Modifier) {
+    val trashLists by viewModel.lists.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
+    val context = LocalContext.current
+    val userId = UserUtils.getUserId(context)
+
+    LaunchedEffect(Unit) {
+        viewModel.loadDeletedLists(userId)
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
+        // UI для кнопки назад і заголовка
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -52,7 +76,7 @@ fun TrashScreen(navController: NavController, modifier: Modifier = Modifier) {
                 )
             }
 
-            Spacer(modifier = Modifier.width(3.dp)) // Відступ між кнопкою та текстом
+            Spacer(modifier = Modifier.width(3.dp))
 
             Text(
                 text = stringResource(R.string.trash),
@@ -62,37 +86,122 @@ fun TrashScreen(navController: NavController, modifier: Modifier = Modifier) {
             )
         }
 
-        if (trashLists.isEmpty()) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.empty_trash),
-                    contentDescription = "Empty Trash",
+        when {
+            isLoading -> {
+                // Показуємо CircularProgressIndicator
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = LocalCustomColors.current.green,
+                    )
+                }
+            }
+
+            trashLists.isEmpty() -> {
+                // Показуємо повідомлення про відсутність списків
+                Column(
                     modifier = Modifier
-                        .size(250.dp)
-                        .padding(bottom = 36.dp)
-                )
-                Text(
-                    text = stringResource(R.string.lets_plan_your_shopping),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = LocalCustomColors.current.text,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 8.dp),
-                )
-                Text(
-                    text = stringResource(R.string.click_on_the_plus_to_create_your_first_list),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center,
-                    color = LocalCustomColors.current.textSecondary,
-                    modifier = Modifier.padding(bottom = 64.dp)
-                )
+                        .align(Alignment.Center)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.empty_trash),
+                        contentDescription = "Empty Trash",
+                        modifier = Modifier
+                            .size(250.dp)
+                            .padding(bottom = 36.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.no_deleted_lists),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = LocalCustomColors.current.text,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 8.dp),
+                    )
+                }
+            }
+
+            else -> {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(start = 16.dp, top = 65.dp, end = 16.dp, bottom = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    LazyColumn {
+                        items(trashLists) { list ->
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 0.dp, vertical = 7.dp)
+                                    .shadow(
+                                        elevation = 3.dp,
+                                        shape = RoundedCornerShape(8.dp),
+                                        clip = false
+                                    )
+                                    .background(
+                                        LocalCustomColors.current.listBackground,
+                                        RoundedCornerShape(8.dp)
+                                    )
+                                    .padding(start = 15.dp, top = 10.dp, end = 10.dp, bottom = 15.dp)
+                                    .clickable {
+                                        navController.navigate("list_screen/${list.id}")
+                                    }
+                            ) {
+                                // Назва списку
+                                Text(
+                                    text = list.name,
+                                    color = LocalCustomColors.current.text,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 20.sp,
+                                    modifier = Modifier
+                                        .padding(end = 25.dp, top = 10.dp),
+                                )
+
+                                // Тексти "Відновити" та "Видалити" в рядок
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 10.dp),
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    // Текст "Відновити"
+                                    Text(
+                                        text = stringResource(R.string.restore),
+                                        color = LocalCustomColors.current.green,
+                                        modifier = Modifier
+                                            .clickable {
+                                                viewModel.removeFromTrash(list.id)
+                                                viewModel.loadDeletedLists(userId = userId)
+                                            }
+                                            .padding(end = 16.dp),
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+
+                                    // Текст "Видалити"
+                                    Text(
+                                        text = stringResource(R.string.delete),
+                                        color = Color.Red,
+                                        modifier = Modifier
+                                            .clickable {
+                                                viewModel.permanentlyDeleteItem(list.id)
+                                                viewModel.loadDeletedLists(userId = userId)
+                                            },
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

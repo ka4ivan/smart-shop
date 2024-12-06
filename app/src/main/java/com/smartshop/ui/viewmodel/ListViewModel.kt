@@ -16,12 +16,24 @@ class ListViewModel : ViewModel() {
     private val _lists = MutableStateFlow<List<ListData>>(emptyList())
     val lists: StateFlow<List<ListData>> = _lists
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     suspend fun getListsOnce(userId: String): List<ListData> {
         return repository.getListsOnce(userId)
     }
 
     suspend fun showList(listId: String): ListData {
         return repository.showList(listId)
+    }
+
+    fun loadDeletedLists(userId: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val lists = repository.getDeletedListsOnce(userId)
+            _lists.value = lists
+            _isLoading.value = false
+        }
     }
 
     fun fetchAllLists() {
@@ -59,6 +71,13 @@ class ListViewModel : ViewModel() {
         }
     }
 
+    // Видалення запису повністю з корзини (в корзині)
+    fun permanentlyDeleteItem(listId: String) {
+        viewModelScope.launch {
+            repository.forceDeleteList(listId)
+        }
+    }
+
     fun deleteList(listId: String) {
         viewModelScope.launch {
             repository.deleteList(listId)
@@ -86,6 +105,12 @@ class ListViewModel : ViewModel() {
     fun deleteListitem(listitemId: String) {
         viewModelScope.launch {
             repository.deleteListitem(listitemId)
+        }
+    }
+
+    fun removeFromTrash(listId: String) {
+        viewModelScope.launch {
+            repository.undoList(listId)
         }
     }
 }

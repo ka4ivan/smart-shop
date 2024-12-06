@@ -30,6 +30,25 @@ class ListRepository {
         }
     }
 
+    suspend fun getDeletedListsOnce(userId: String): List<ListData> {
+        return try {
+            val snapshot = database
+                .orderByChild("userId")
+                .equalTo(userId)
+                .get()
+                .await()
+
+            val lists = snapshot.children.mapNotNull {
+                val listData = it.getValue(ListData::class.java)
+                listData
+            }
+
+            lists.filterNot { it.delete == false }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
 
     suspend fun getLists(userId: String): List<ListData> {
         return try {

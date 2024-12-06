@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -151,7 +152,13 @@ fun Navigation(
                     onThemeChange = onThemeChange
                 )
             }
-            composable(Screen.TrashScreen.route) { TrashScreen(navController = navController) }
+            composable(Screen.TrashScreen.route) { backStackEntry ->
+                val listViewModel: ListViewModel = viewModel()
+                TrashScreen(
+                    navController = navController,
+                    viewModel = listViewModel
+                )
+            }
         }
     }
 }
