@@ -109,11 +109,15 @@ class ListRepository {
     }
 
     suspend fun deleteListitem(listitemId: String) {
-        databaseListitems.child(listitemId).removeValue().await()
+        databaseListitems.child(listitemId).child("delete").setValue(true).await()
     }
 
     suspend fun undoList(listId: String) {
         database.child(listId).child("delete").setValue(false).await()
+    }
+
+    suspend fun undoListitem(listitemId: String) {
+        databaseListitems.child(listitemId).child("delete").setValue(false).await()
     }
 
     suspend fun getAllLists(): List<ListData> {

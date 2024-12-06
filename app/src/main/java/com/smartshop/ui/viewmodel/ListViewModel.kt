@@ -91,6 +91,13 @@ class ListViewModel : ViewModel() {
         }
     }
 
+    fun undoListitem(listitemId: String) {
+        viewModelScope.launch {
+            repository.undoListitem(listitemId)
+            fetchAllLists()
+        }
+    }
+
     suspend fun getListitems(listId: String): List<ListitemData> {
         return repository.getListitems(listId)
     }

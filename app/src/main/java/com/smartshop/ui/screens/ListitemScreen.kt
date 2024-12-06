@@ -50,7 +50,6 @@ import com.smartshop.data.model.ListitemData
 import com.smartshop.ui.theme.LocalCustomColors
 import com.smartshop.ui.theme.Red
 import com.smartshop.ui.viewmodel.ListitemViewModel
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,10 +1,14 @@
 package com.smartshop.ui.screens
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,6 +48,8 @@ import com.smartshop.R
 import com.smartshop.Screen
 import com.smartshop.data.model.ListData
 import com.smartshop.data.model.ListitemData
+import com.smartshop.ui.theme.BlueSky
+import com.smartshop.ui.theme.BtnAddBackgroundDark
 import com.smartshop.ui.theme.LocalCustomColors
 import com.smartshop.ui.viewmodel.ListViewModel
 import kotlinx.coroutines.delay
@@ -55,15 +61,52 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
     var menuExpanded by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    var showUndoNotification by remember { mutableStateOf(false) }
+    var deletedListitem by remember { mutableStateOf<ListitemData?>(null) }
 
     var listitems by remember { mutableStateOf<List<ListitemData>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
+    var isDeleteCancelled by remember { mutableStateOf(false) }
 
     LaunchedEffect(listId) {
         isLoading = true
         listitems = viewModel.getListitems(listId)
         listData.value = viewModel.showList(listId)
         isLoading = false
+    }
+
+    LaunchedEffect(showUndoNotification) {
+        if (showUndoNotification) {
+            deletedListitem?.let { listitem ->
+                viewModel.deleteList(listitem.id)
+                coroutineScope.launch {
+                    listitems = viewModel.getListitems(listId)
+                    listData.value = viewModel.showList(listId)
+                }
+            }
+
+            delay(3000)
+            showUndoNotification = false
+        }
+    }
+
+    // Функція для скасування видалення
+    fun cancelDelete() {
+        isDeleteCancelled = true
+
+        showUndoNotification = false
+        deletedListitem?.let { listitem ->
+            viewModel.undoListitem(listitem.id)
+            coroutineScope.launch {
+                listitems = viewModel.getListitems(listId)
+                listData.value = viewModel.showList(listId)
+            }
+        }
+        coroutineScope.launch {
+            isLoading = true
+            listitems = viewModel.getListitems(listId)
+            isLoading = false
+        }
     }
 
     val list = listData.value
@@ -246,7 +289,68 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
                     )
                 }
             } else {
-                CheckableList(listitems = listitems, viewModel = viewModel, navController = navController)
+                val mutableListItems = remember { mutableStateListOf<ListitemData>().apply { addAll(listitems) } }
+
+                LazyColumn(modifier = Modifier.padding(top = 50.dp)) {
+                    items(
+                        items = mutableListItems,
+                        key = { it.id }
+                    ) { listitem ->
+
+                        SwipeToDeleteContainer(
+                            item = listitem,
+                            onDelete = { itemToRemove ->
+                                showUndoNotification = true
+                                mutableListItems.remove(itemToRemove)
+                                viewModel.deleteListitem(itemToRemove.id)
+                                isDeleteCancelled = false
+                                deletedListitem = listitem
+                            }
+                        ) { item ->
+                            CheckableListItem(
+                                listitem = item,
+                                onCheckedChange = { updatedItem ->
+                                    viewModel.updateListitem(item.id, updatedItem)
+                                },
+                                navController = navController
+                            )
+                        }
+                    }
+                }
+            }
+
+            AnimatedVisibility(
+                visible = showUndoNotification,
+                enter = fadeIn(animationSpec = tween(durationMillis = 500)) + slideInVertically(initialOffsetY = { -it }),
+                exit = fadeOut(animationSpec = tween(durationMillis = 500)) + slideOutVertically(targetOffsetY = { it }),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 110.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .background(BtnAddBackgroundDark, RoundedCornerShape(10.dp))
+                        .padding(vertical = 5.dp, horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.item_removed),
+                        color = Color.White,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center
+                    )
+                    Button(
+                        onClick = {
+                            cancelDelete() // Cancel the deletion and restore the item
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = BtnAddBackgroundDark, contentColor = BlueSky),
+                    ) {
+                        Text(text = stringResource(R.string.cancel).uppercase(), fontWeight = FontWeight.Bold)
+                    }
+                }
             }
 
             // Кнопка для додавання нового списку
@@ -280,34 +384,6 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
     }
 }
 
-@Composable
-fun CheckableList(listitems: List<ListitemData>, viewModel: ListViewModel, navController: NavController) {
-    val mutableListItems = remember { mutableStateListOf<ListitemData>().apply { addAll(listitems) } }
-
-    LazyColumn(modifier = Modifier.padding(top = 50.dp)) {
-        items(
-            items = mutableListItems,
-            key = { it.id }
-        ) { listItem ->
-            SwipeToDeleteContainer(
-                item = listItem,
-                onDelete = { itemToRemove ->
-                    mutableListItems.remove(itemToRemove)
-                    viewModel.deleteListitem(itemToRemove.id)
-                }
-            ) { item ->
-                // Вміст рядка з чекбоксом
-                CheckableListItem(
-                    listitem = item,
-                    onCheckedChange = { updatedItem ->
-                        viewModel.updateListitem(item.id, updatedItem)
-                    },
-                    navController = navController
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun CheckableListItem(

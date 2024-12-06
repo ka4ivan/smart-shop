@@ -1,7 +1,6 @@
 package com.smartshop.data.repository
 
 import com.google.firebase.database.FirebaseDatabase
-import com.smartshop.data.model.ListData
 import com.smartshop.data.model.ListitemData
 import kotlinx.coroutines.tasks.await
 
@@ -105,6 +104,6 @@ class ListitemRepository {
     }
 
     suspend fun deleteListitem(listitemId: String) {
-        database.child(listitemId).removeValue().await()
+        database.child(listitemId).child("delete").setValue(true).await()
     }
 }
