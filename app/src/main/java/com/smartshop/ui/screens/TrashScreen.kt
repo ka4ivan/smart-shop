@@ -88,7 +88,6 @@ fun TrashScreen(navController: NavController, viewModel: ListViewModel, modifier
 
         when {
             isLoading -> {
-                // Показуємо CircularProgressIndicator
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -100,7 +99,6 @@ fun TrashScreen(navController: NavController, viewModel: ListViewModel, modifier
             }
 
             trashLists.isEmpty() -> {
-                // Показуємо повідомлення про відсутність списків
                 Column(
                     modifier = Modifier
                         .align(Alignment.Center)
@@ -164,16 +162,14 @@ fun TrashScreen(navController: NavController, viewModel: ListViewModel, modifier
                                         .padding(end = 25.dp, top = 10.dp),
                                 )
 
-                                // Тексти "Відновити" та "Видалити" в рядок
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(top = 10.dp),
                                     horizontalArrangement = Arrangement.End
                                 ) {
-                                    // Текст "Відновити"
                                     Text(
-                                        text = stringResource(R.string.restore),
+                                        text = stringResource(R.string.restore).uppercase(),
                                         color = LocalCustomColors.current.green,
                                         modifier = Modifier
                                             .clickable {
@@ -187,7 +183,7 @@ fun TrashScreen(navController: NavController, viewModel: ListViewModel, modifier
 
                                     // Текст "Видалити"
                                     Text(
-                                        text = stringResource(R.string.delete),
+                                        text = stringResource(R.string.delete).uppercase(),
                                         color = Color.Red,
                                         modifier = Modifier
                                             .clickable {

@@ -274,6 +274,7 @@ fun ListitemScreen(
                         viewModel.deleteListitem(listitem.id)
                         navController.navigate("list_screen/${listitem.listId}")
                     },
+                    modifier = Modifier.padding(top = 14.dp),
                     colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
                 ) {
                     Row(
