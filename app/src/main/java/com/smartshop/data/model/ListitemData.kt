@@ -8,7 +8,7 @@ data class ListitemData(
     val qty: Double,
     val unit: String,
     val delete: Boolean,
-    val isCheck: Boolean,
+    var isCheck: Boolean,
     val listId: String,
     val createdAt: Any?,
     val updatedAt: Any?

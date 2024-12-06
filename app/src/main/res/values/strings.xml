@@ -11,6 +11,8 @@
     <string name="close">Закрити</string>
     <string name="on">Увімкнути</string>
     <string name="off">Вимкнути</string>
+    <string name="qty">Кількість</string>
+    <string name="unit">Одиниця виміру</string>
     <string name="no_deleted_lists">Видалених списків не знайдено</string>
     <string name="undo_restore">Вернути</string>
     <string name="restore">Відновити</string>

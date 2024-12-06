@@ -94,8 +94,7 @@ fun TrashScreen(navController: NavController, viewModel: ListViewModel, modifier
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(
-                        color = LocalCustomColors.current.text,
-                        strokeWidth = 4.dp
+                        color = LocalCustomColors.current.green,
                     )
                 }
             }

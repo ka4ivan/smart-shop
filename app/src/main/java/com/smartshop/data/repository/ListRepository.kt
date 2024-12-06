@@ -3,10 +3,12 @@ package com.smartshop.data.repository
 import android.util.Log
 import com.google.firebase.database.FirebaseDatabase
 import com.smartshop.data.model.ListData
+import com.smartshop.data.model.ListitemData
 import kotlinx.coroutines.tasks.await
 
 class ListRepository {
     private val database = FirebaseDatabase.getInstance("https://lntu-94305-default-rtdb.europe-west1.firebasedatabase.app").reference.child("lists")
+    private val databaseListitems = FirebaseDatabase.getInstance("https://lntu-94305-default-rtdb.europe-west1.firebasedatabase.app").reference.child("listitems")
 
     suspend fun getListsOnce(userId: String): List<ListData> {
         return try {
@@ -94,12 +96,20 @@ class ListRepository {
         database.child(listId).setValue(updatedList).await()
     }
 
+    suspend fun updateListitem(listitemId: String, updatedListitem: ListitemData) {
+        databaseListitems.child(listitemId).setValue(updatedListitem).await()
+    }
+
     suspend fun forceDeleteList(listId: String) {
         database.child(listId).removeValue().await()
     }
 
     suspend fun deleteList(listId: String) {
         database.child(listId).child("delete").setValue(true).await()
+    }
+
+    suspend fun deleteListitem(listitemId: String) {
+        databaseListitems.child(listitemId).removeValue().await()
     }
 
     suspend fun undoList(listId: String) {
@@ -109,5 +119,25 @@ class ListRepository {
     suspend fun getAllLists(): List<ListData> {
         val snapshot = database.get().await()
         return snapshot.children.mapNotNull { it.getValue(ListData::class.java) }
+    }
+
+    suspend fun getListitems(listId: String): List<ListitemData> {
+        return try {
+            val snapshot = databaseListitems
+                .orderByChild("listId")
+                .equalTo(listId)
+                .get()
+                .await()
+
+            val lists = snapshot.children.mapNotNull {
+                val listData = it.getValue(ListitemData::class.java)
+                listData
+            }
+
+            lists.filterNot { it.delete == true }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
     }
 }

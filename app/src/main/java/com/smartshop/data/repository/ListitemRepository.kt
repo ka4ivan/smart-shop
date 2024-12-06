@@ -1,6 +1,7 @@
 package com.smartshop.data.repository
 
 import com.google.firebase.database.FirebaseDatabase
+import com.smartshop.data.model.ListData
 import com.smartshop.data.model.ListitemData
 import kotlinx.coroutines.tasks.await
 
@@ -87,5 +88,23 @@ class ListitemRepository {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    suspend fun showListitem(listitemId: String): ListitemData {
+        return try {
+            val snapshot = database.child(listitemId).get().await()
+            snapshot.getValue(ListitemData::class.java) ?: ListitemData("","", 1.0, "", false, false, "", null, null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ListitemData("","", 1.0, "", false, false, "", null, null)
+        }
+    }
+
+    suspend fun updateListitem(listitemId: String, updatedListitem: ListitemData) {
+        database.child(listitemId).setValue(updatedListitem).await()
+    }
+
+    suspend fun deleteListitem(listitemId: String) {
+        database.child(listitemId).removeValue().await()
     }
 }
