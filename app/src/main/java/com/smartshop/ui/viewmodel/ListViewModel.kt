@@ -71,7 +71,6 @@ class ListViewModel : ViewModel() {
         }
     }
 
-    // Видалення запису повністю з корзини (в корзині)
     fun permanentlyDeleteItem(listId: String) {
         viewModelScope.launch {
             repository.forceDeleteList(listId)
@@ -111,6 +110,18 @@ class ListViewModel : ViewModel() {
     fun removeFromTrash(listId: String) {
         viewModelScope.launch {
             repository.undoList(listId)
+        }
+    }
+
+    fun uncheckListitems(listId: String) {
+        viewModelScope.launch {
+            repository.uncheckListitems(listId)
+        }
+    }
+
+    fun deleteCheckedListitems(listId: String) {
+        viewModelScope.launch {
+            repository.deleteCheckedListitems(listId)
         }
     }
 }

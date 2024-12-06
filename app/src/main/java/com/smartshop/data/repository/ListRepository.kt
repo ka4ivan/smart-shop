@@ -140,4 +140,40 @@ class ListRepository {
             emptyList()
         }
     }
+
+    suspend fun uncheckListitems(listId: String) {
+        val snapshot = databaseListitems
+            .orderByChild("listId")
+            .equalTo(listId)
+            .get()
+            .await()
+
+        if (snapshot.exists()) {
+            for (child in snapshot.children) {
+                val key = child.key
+                if (key != null) {
+                    databaseListitems.child(key).child("check").setValue(false).await()
+                }
+            }
+        }
+    }
+
+    suspend fun deleteCheckedListitems(listId: String) {
+        val snapshot = databaseListitems
+            .orderByChild("listId")
+            .equalTo(listId)
+            .get()
+            .await()
+
+        if (snapshot.exists()) {
+            for (child in snapshot.children) {
+                val listItem = child.getValue(ListitemData::class.java)
+                val key = child.key
+
+                if (listItem?.isCheck == true && key != null) {
+                    databaseListitems.child(key).removeValue().await()
+                }
+            }
+        }
+    }
 }

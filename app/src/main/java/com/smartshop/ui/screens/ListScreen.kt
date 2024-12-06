@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,20 +47,22 @@ import com.smartshop.data.model.ListitemData
 import com.smartshop.ui.theme.LocalCustomColors
 import com.smartshop.ui.viewmodel.ListViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: String, modifier: Modifier = Modifier) {
     val listData = remember { mutableStateOf<ListData?>(null) }
     var menuExpanded by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
     var listitems by remember { mutableStateOf<List<ListitemData>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) } // Додаємо змінну для завантаження
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(listId) {
         isLoading = true
         listitems = viewModel.getListitems(listId)
-        listData.value = viewModel.showList(listId.toString())
+        listData.value = viewModel.showList(listId)
         isLoading = false
     }
 
@@ -67,7 +70,6 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
 
     Box(modifier = modifier.fillMaxSize()) {
         if (isLoading) {
-            // Показуємо індикатор завантаження
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -77,7 +79,6 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
                 )
             }
         } else if (list != null) {
-            // Верх
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -153,7 +154,13 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
                                 },
                                 onClick = {
                                     menuExpanded = false
-                                    navController.navigate(Screen.TrashScreen.route)
+                                    coroutineScope.launch {
+                                        isLoading = true
+                                        viewModel.uncheckListitems(listId)
+                                        delay(500)
+                                        listitems = viewModel.getListitems(listId)
+                                        isLoading = false
+                                    }
                                 },
                                 modifier = Modifier
                                     .padding(horizontal = 0.dp, vertical = 0.dp)
@@ -182,7 +189,13 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
                                 },
                                 onClick = {
                                     menuExpanded = false
-                                    navController.navigate(Screen.TrashScreen.route)
+                                    coroutineScope.launch {
+                                        isLoading = true
+                                        viewModel.deleteCheckedListitems(listId)
+                                        delay(500)
+                                        listitems = viewModel.getListitems(listId)
+                                        isLoading = false
+                                    }
                                 },
                                 modifier = Modifier
                                     .padding(horizontal = 0.dp, vertical = 0.dp)
