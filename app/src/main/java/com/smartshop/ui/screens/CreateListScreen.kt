@@ -164,15 +164,16 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                 onClick = {
                     val listData = ListData(
                         id = "",
-                        name = if ("" == inputText) context.getString(R.string.new_list) else inputText,
+                        name = if (inputText.isBlank()) context.getString(R.string.new_list) else inputText,
                         userId = UserUtils.getUserId(context),
                         delete = false,
                         createdAt = null,
                         updatedAt = null,
                     )
 
-                    viewModel.createList(listData)
-                    navController.navigate(Screen.ListsScreen.route)
+                    viewModel.createList(listData) { newList ->
+                        navController.navigate("list_screen/${newList.id}")
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
