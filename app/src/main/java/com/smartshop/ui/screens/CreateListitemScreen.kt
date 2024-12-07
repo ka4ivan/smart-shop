@@ -82,7 +82,7 @@ fun CreateListitemScreen(navController: NavController, viewModel: ListitemViewMo
                     horizontalArrangement = Arrangement.Start,
                 ) {
                     IconButton(
-                        onClick = { navController.navigate(Screen.ListsScreen.route) },
+                        onClick = { navController.navigate("list_screen/${listId}") },
                         modifier = Modifier.size(48.dp)
                     ) {
                         Icon(
