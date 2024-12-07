@@ -72,7 +72,7 @@ class ListRepository {
         }
     }
 
-    suspend fun createList(list: ListData) {
+    suspend fun createList(list: ListData): ListData {
         val timestamp = System.currentTimeMillis()
         val listWithTimestamp = list.copy(createdAt = timestamp, updatedAt = timestamp)
 
@@ -80,7 +80,9 @@ class ListRepository {
         val newListWithId = listWithTimestamp.copy(id = newListRef.key ?: "")
 
         newListRef.setValue(newListWithId).await()
+        return newListWithId
     }
+
 
     suspend fun showList(listId: String): ListData {
         return try {

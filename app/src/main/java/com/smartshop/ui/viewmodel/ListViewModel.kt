@@ -50,12 +50,14 @@ class ListViewModel : ViewModel() {
         }
     }
 
-    fun createList(list: ListData) {
+    fun createList(list: ListData, onComplete: (ListData) -> Unit) {
         viewModelScope.launch {
-            repository.createList(list)
+            val newList = repository.createList(list)
             fetchAllLists()
+            onComplete(newList)
         }
     }
+
 
     fun updateList(listId: String, updatedList: ListData) {
         viewModelScope.launch {
