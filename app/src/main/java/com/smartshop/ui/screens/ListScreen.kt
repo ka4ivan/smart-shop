@@ -200,7 +200,7 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
                                     coroutineScope.launch {
                                         isLoading = true
                                         viewModel.uncheckListitems(listId)
-                                        delay(500)
+                                        delay(1000)
                                         listitems = viewModel.getListitems(listId)
                                         isLoading = false
                                     }
@@ -235,7 +235,7 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
                                     coroutineScope.launch {
                                         isLoading = true
                                         viewModel.deleteCheckedListitems(listId)
-                                        delay(500)
+                                        delay(1000)
                                         listitems = viewModel.getListitems(listId)
                                         isLoading = false
                                     }

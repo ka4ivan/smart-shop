@@ -169,11 +169,11 @@ fun TrashScreen(navController: NavController, viewModel: ListViewModel, modifier
                                     horizontalArrangement = Arrangement.End
                                 ) {
                                     Text(
-                                        text = stringResource(R.string.restore).uppercase(),
-                                        color = LocalCustomColors.current.green,
+                                        text = stringResource(R.string.delete).uppercase(),
+                                        color = Color.Red,
                                         modifier = Modifier
                                             .clickable {
-                                                viewModel.removeFromTrash(list.id)
+                                                viewModel.permanentlyDeleteItem(list.id)
                                                 viewModel.loadDeletedLists(userId = userId)
                                             }
                                             .padding(end = 16.dp),
@@ -181,13 +181,12 @@ fun TrashScreen(navController: NavController, viewModel: ListViewModel, modifier
                                         fontWeight = FontWeight.Bold
                                     )
 
-                                    // Текст "Видалити"
                                     Text(
-                                        text = stringResource(R.string.delete).uppercase(),
-                                        color = Color.Red,
+                                        text = stringResource(R.string.restore).uppercase(),
+                                        color = LocalCustomColors.current.green,
                                         modifier = Modifier
                                             .clickable {
-                                                viewModel.permanentlyDeleteItem(list.id)
+                                                viewModel.removeFromTrash(list.id)
                                                 viewModel.loadDeletedLists(userId = userId)
                                             },
                                         fontSize = 16.sp,
