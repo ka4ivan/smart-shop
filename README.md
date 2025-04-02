@@ -47,7 +47,7 @@ A simple and intuitive shopping list application for Android, built with Kotlin 
 1. Clone the repository:
 
 ```
-git clone https://github.com/your-repo/shopping-list-app.git cd shopping-list-app
+git clone https://github.com/ka4ivan/smart-shop.git
 ```
 
 2. Open the project in Android Studio.
