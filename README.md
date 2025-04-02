@@ -9,7 +9,8 @@ A simple and intuitive shopping list application for Android, built with Kotlin 
   <img src="https://github.com/user-attachments/assets/e5beeeac-1542-4cec-9a51-b16fea937fe8" width="175"/>
   <img src="https://github.com/user-attachments/assets/ff3aeb57-c35a-4982-a18d-1acfcedec091" width="175"/>
   <img src="https://github.com/user-attachments/assets/28165f83-a129-4847-a422-6607b19f880d" width="175"/>
-  <img src="https://github.com/user-attachments/assets/2d6ffb5c-f841-4886-a9a5-a20e4b1263e5" width="175"/>
+  <img src="https://github.com/user-attachments/assets/28165f83-a129-4847-a422-6607b19f880d" width="175"/>
+  <img src="https://github.com/user-attachments/assets/d84ce7f2-5a77-45ce-bff4-387f7e2bb9ec" width="175"/>
 </p>
 
 <p align="center">
@@ -19,7 +20,9 @@ A simple and intuitive shopping list application for Android, built with Kotlin 
   <img src="https://github.com/user-attachments/assets/85e8242f-4be3-4c20-b8fe-b275608e873b" width="175"/>
   <img src="https://github.com/user-attachments/assets/512fe3a2-cb5e-4ad3-9221-854e5d67b6ec" width="175"/>
   <img src="https://github.com/user-attachments/assets/f9128adc-c090-47ba-b239-cffe22d7c6d6" width="175"/>
+  <img src="https://github.com/user-attachments/assets/f9128adc-c090-47ba-b239-cffe22d7c6d6" width="175"/>
   <img src="https://github.com/user-attachments/assets/a5c589d9-819b-43e0-8994-2a797f6d19a7" width="175"/>
+  <img src="https://github.com/user-attachments/assets/f017363d-3e6f-431c-950e-582d55a3257a" width="175"/>
 </p>
 
 
