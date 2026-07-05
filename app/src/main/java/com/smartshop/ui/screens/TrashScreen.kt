@@ -32,7 +32,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.draw.shadow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import com.smartshop.R
-import com.smartshop.Screen
 import com.smartshop.ui.theme.LocalCustomColors
 import com.smartshop.ui.viewmodel.ListViewModel
 import androidx.compose.runtime.collectAsState
@@ -65,7 +64,7 @@ fun TrashScreen(navController: NavController, viewModel: ListViewModel, modifier
             horizontalArrangement = Arrangement.Start
         ) {
             IconButton(
-                onClick = { navController.navigate(Screen.ListsScreen.route) },
+                onClick = { navController.popBackStack() },
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(

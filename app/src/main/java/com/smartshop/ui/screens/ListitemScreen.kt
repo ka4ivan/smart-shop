@@ -84,7 +84,7 @@ fun ListitemScreen(
             ) {
                 IconButton(
                     onClick = {
-                        navController.navigate("list_screen/${listitem.listId}")
+                        navController.popBackStack()
                     },
                     modifier = Modifier.size(48.dp)
                 ) {
@@ -271,7 +271,7 @@ fun ListitemScreen(
                 Button(
                     onClick = {
                         viewModel.deleteListitem(listitem.id)
-                        navController.navigate("list_screen/${listitem.listId}")
+                        navController.popBackStack()
                     },
                     modifier = Modifier.padding(top = 14.dp),
                     colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)

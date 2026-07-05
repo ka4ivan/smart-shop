@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.smartshop.R
-import com.smartshop.Screen
 import com.smartshop.data.model.ListData
 import com.smartshop.data.model.ListitemData
 import com.smartshop.ui.theme.BlueSky
@@ -134,7 +133,7 @@ fun ListScreen(navController: NavController, viewModel: ListViewModel, listId: S
                     horizontalArrangement = Arrangement.Start,
                 ) {
                     IconButton(
-                        onClick = { navController.navigate(Screen.ListsScreen.route) },
+                        onClick = { navController.popBackStack() },
                         modifier = Modifier.size(48.dp)
                     ) {
                         Icon(

@@ -82,7 +82,7 @@ fun CreateListitemScreen(navController: NavController, viewModel: ListitemViewMo
                     horizontalArrangement = Arrangement.Start,
                 ) {
                     IconButton(
-                        onClick = { navController.navigate("list_screen/${listId}") },
+                        onClick = { navController.popBackStack() },
                         modifier = Modifier.size(48.dp)
                     ) {
                         Icon(

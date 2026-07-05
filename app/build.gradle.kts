@@ -27,7 +27,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val apiKey = localProperties.getProperty("API_KEY") ?: project.findProperty("API_KEY") as String? ?: ""
+        val apiKey = localProperties.getProperty("WEATHER_API_KEY") ?: project.findProperty("WEATHER_API_KEY") as String? ?: ""
         buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 

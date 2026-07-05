@@ -62,7 +62,7 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
-                    onClick = { navController.navigate(Screen.ListsScreen.route) },
+                    onClick = { navController.popBackStack() },
                     modifier = Modifier.size(48.dp)
                 ) {
                     Icon(
@@ -172,7 +172,9 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                     )
 
                     viewModel.createList(listData) { newList ->
-                        navController.navigate("list_screen/${newList.id}")
+                        navController.navigate("list_screen/${newList.id}") {
+                            popUpTo(Screen.CreateListScreen.route) { inclusive = true }
+                        }
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
