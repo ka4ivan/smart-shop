@@ -95,77 +95,91 @@ fun ProfileScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        ProfileHeader()
-
-        Spacer(modifier = Modifier.height(32.dp))
-
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .clip(RoundedCornerShape(18.dp))
-                .background(LocalCustomColors.current.listBackground)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            val user = currentUser
-            if (user != null) {
-                AccountRow(
-                    user = user,
-                    onSignOut = { authViewModel.signOut() }
-                )
-            } else {
+            ProfileHeader(user = currentUser)
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            if (currentUser == null) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(LocalCustomColors.current.listBackground)
+                ) {
+                    SettingsRow(
+                        icon = R.drawable.user,
+                        title = stringResource(R.string.account),
+                        value = stringResource(R.string.not_signed_in),
+                        onClick = { isAuthSheetVisible = true }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(LocalCustomColors.current.listBackground)
+            ) {
                 SettingsRow(
-                    icon = R.drawable.user,
-                    title = stringResource(R.string.account),
-                    value = stringResource(R.string.not_signed_in),
-                    onClick = { isAuthSheetVisible = true }
+                    icon = R.drawable.pallet,
+                    title = stringResource(R.string.change_theme),
+                    value = stringResource(if (currentTheme) R.string.dark_theme else R.string.light_theme),
+                    onClick = { isThemeSheetVisible = true }
+                )
+                HorizontalDivider(
+                    modifier = Modifier.padding(start = 70.dp),
+                    thickness = 1.dp,
+                    color = LocalCustomColors.current.lightGray
+                )
+                SettingsRow(
+                    icon = R.drawable.language,
+                    title = stringResource(R.string.language),
+                    value = if (currentLanguage == "en") "English" else "Українська",
+                    onClick = { isLanguageSheetVisible = true }
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                text = stringResource(R.string.app_version, BuildConfig.VERSION_NAME),
+                fontSize = 12.sp,
+                color = LocalCustomColors.current.textSecondary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp)
+            )
+        }
+
+        if (currentUser != null) {
+            IconButton(
+                onClick = { authViewModel.signOut() },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 16.dp, end = 16.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.logout),
+                    contentDescription = stringResource(R.string.sign_out),
+                    tint = LocalCustomColors.current.listMenu,
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .clip(RoundedCornerShape(18.dp))
-                .background(LocalCustomColors.current.listBackground)
-        ) {
-            SettingsRow(
-                icon = R.drawable.pallet,
-                title = stringResource(R.string.change_theme),
-                value = stringResource(if (currentTheme) R.string.dark_theme else R.string.light_theme),
-                onClick = { isThemeSheetVisible = true }
-            )
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 70.dp),
-                thickness = 1.dp,
-                color = LocalCustomColors.current.lightGray
-            )
-            SettingsRow(
-                icon = R.drawable.language,
-                title = stringResource(R.string.language),
-                value = if (currentLanguage == "en") "English" else "Українська",
-                onClick = { isLanguageSheetVisible = true }
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Text(
-            text = stringResource(R.string.app_version, BuildConfig.VERSION_NAME),
-            fontSize = 12.sp,
-            color = LocalCustomColors.current.textSecondary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp)
-        )
     }
 
     if (isThemeSheetVisible) {
@@ -223,66 +237,6 @@ fun ProfileScreen(
                     onSuccess = { isAuthSheetVisible = false }
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun AccountRow(user: FirebaseUser, onSignOut: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(LocalCustomColors.current.lightBlue),
-            contentAlignment = Alignment.Center
-        ) {
-            val photoUrl = user.photoUrl
-            if (photoUrl != null) {
-                Image(
-                    painter = rememberAsyncImagePainter(photoUrl.toString()),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape)
-                )
-            } else {
-                Icon(
-                    painter = painterResource(R.drawable.user),
-                    contentDescription = null,
-                    tint = LocalCustomColors.current.blue,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.width(14.dp))
-
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = user.email ?: user.displayName ?: stringResource(R.string.account),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = LocalCustomColors.current.text
-            )
-            Text(
-                text = stringResource(R.string.account),
-                fontSize = 13.sp,
-                color = LocalCustomColors.current.textSecondary
-            )
-        }
-
-        TextButton(onClick = onSignOut) {
-            Text(
-                text = stringResource(R.string.sign_out),
-                color = Red,
-                fontWeight = FontWeight.SemiBold
-            )
         }
     }
 }
@@ -450,7 +404,7 @@ private fun AuthBottomSheetContent(
 }
 
 @Composable
-private fun ProfileHeader() {
+private fun ProfileHeader(user: FirebaseUser?) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -464,27 +418,56 @@ private fun ProfileHeader() {
                 .background(LocalCustomColors.current.blue),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                painter = painterResource(R.drawable.user),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(46.dp)
-            )
+            val photoUrl = user?.photoUrl
+            if (photoUrl != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(photoUrl.toString()),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape)
+                )
+            } else {
+                Icon(
+                    painter = painterResource(R.drawable.user),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(46.dp)
+                )
+            }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.app_name),
-            fontSize = 22.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = LocalCustomColors.current.text
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = stringResource(R.string.hello),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = LocalCustomColors.current.textSecondary
-        )
+        if (user != null) {
+            Text(
+                text = user.displayName ?: user.email ?: stringResource(R.string.account),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = LocalCustomColors.current.text
+            )
+            if (user.displayName != null && user.email != null) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = user.email!!,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = LocalCustomColors.current.textSecondary
+                )
+            }
+        } else {
+            Text(
+                text = stringResource(R.string.app_name),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = LocalCustomColors.current.text
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(R.string.hello),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = LocalCustomColors.current.textSecondary
+            )
+        }
     }
 }
 
