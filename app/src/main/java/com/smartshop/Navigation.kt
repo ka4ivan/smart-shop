@@ -34,7 +34,9 @@ import com.smartshop.ui.viewmodel.ListitemViewModel
 @Composable
 fun Navigation(
     currentTheme: Boolean,
-    onThemeChange: (Boolean) -> Unit
+    onThemeChange: (Boolean) -> Unit,
+    currentLanguage: String,
+    onLanguageChange: (String) -> Unit
 ) {
     val navController = rememberNavController()
     val items = listOf(
@@ -158,7 +160,9 @@ fun Navigation(
             composable(Screen.ProfileScreen.route) {
                 ProfileScreen(
                     currentTheme = currentTheme,
-                    onThemeChange = onThemeChange
+                    onThemeChange = onThemeChange,
+                    currentLanguage = currentLanguage,
+                    onLanguageChange = onLanguageChange
                 )
             }
             composable(Screen.TrashScreen.route) { backStackEntry ->
