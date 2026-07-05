@@ -9,8 +9,6 @@
     <string name="dark_theme">Темний режим</string>
     <string name="light_theme">Світлий режим</string>
     <string name="language">Мова</string>
-    <string name="ukrainian">Українська</string>
-    <string name="english">Англійська</string>
     <string name="app_version">Версія додатку %1$s</string>
     <string name="close">Закрити</string>
     <string name="on">Увімкнути</string>

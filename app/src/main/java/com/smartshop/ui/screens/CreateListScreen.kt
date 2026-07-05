@@ -6,19 +6,25 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -35,6 +41,13 @@ import com.smartshop.ui.viewmodel.ListViewModel
 fun CreateListScreen(navController: NavController, viewModel: ListViewModel, modifier: Modifier = Modifier) {
     var inputText by remember { mutableStateOf("") }
     val context = LocalContext.current
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
 
     val images = listOf(
         "carrot", "carrot_2", "beetroot", "broccoli", "granola", "kawaii", "onion",
@@ -86,7 +99,7 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
             // Поле вводу
             OutlinedTextField(
                 value = inputText,
-                onValueChange = { newText -> inputText = newText },
+                onValueChange = { newText -> inputText = newText.replaceFirstChar { it.uppercase() } },
                 placeholder = {
                     Text(
                         text = stringResource(R.string.new_list),
@@ -97,9 +110,11 @@ fun CreateListScreen(navController: NavController, viewModel: ListViewModel, mod
                 maxLines = 1,
                 singleLine = true,
                 textStyle = LocalTextStyle.current.copy(fontWeight = FontWeight.ExtraBold),
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp),
+                    .padding(vertical = 16.dp)
+                    .focusRequester(focusRequester),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = LocalCustomColors.current.inputBackground,
                     focusedBorderColor = LocalCustomColors.current.lightGray,

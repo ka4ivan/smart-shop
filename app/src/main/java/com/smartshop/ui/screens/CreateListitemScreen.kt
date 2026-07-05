@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -37,12 +38,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -59,6 +64,13 @@ fun CreateListitemScreen(navController: NavController, viewModel: ListitemViewMo
     var inputValue: String by remember { mutableStateOf("") }
     val existingItems = remember { mutableStateOf<List<ListitemData>>(emptyList()) }
     val loading = remember { mutableStateOf(true) }
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
 
     LaunchedEffect(listId) {
         existingItems.value = viewModel.getListitemsOnce(listId)
@@ -97,10 +109,11 @@ fun CreateListitemScreen(navController: NavController, viewModel: ListitemViewMo
                     // Текстовий інпут
                     OutlinedTextField(
                         value = inputValue,
-                        onValueChange = { inputValue = it },
+                        onValueChange = { inputValue = it.replaceFirstChar { c -> c.uppercase() } },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 0.dp),
+                            .padding(horizontal = 0.dp)
+                            .focusRequester(focusRequester),
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.add_new_product),
@@ -115,6 +128,7 @@ fun CreateListitemScreen(navController: NavController, viewModel: ListitemViewMo
                             fontSize = 14.sp,
                             fontWeight = FontWeight.ExtraBold
                         ),
+                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             containerColor = LocalCustomColors.current.inputBackground,
                             focusedBorderColor = LocalCustomColors.current.lightGray,

@@ -334,6 +334,9 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                         sheetState = sheetState,
                         windowInsets = WindowInsets(0.dp, 0.dp, 0.dp, (-3).dp)
                     ) {
+                        // ModalBottomSheet renders in a separate Popup that does not
+                        // inherit the localized LocalContext override from MainActivity.
+                        CompositionLocalProvider(LocalContext provides context) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -407,6 +410,7 @@ fun ListsScreen(navController: NavController, viewModel: ListViewModel, modifier
                                     )
                                 }
                             }
+                        }
                         }
                     }
                 }
@@ -495,11 +499,15 @@ fun RenameBottomSheet(
     onRename: (String) -> Unit
 ) {
     var newName by remember { mutableStateOf(listName) }
+    val localizedContext = LocalContext.current
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         windowInsets = WindowInsets(0.dp, 0.dp, 0.dp, (-3).dp)
     ) {
+        // ModalBottomSheet renders in a separate Popup that does not
+        // inherit the localized LocalContext override from MainActivity.
+        CompositionLocalProvider(LocalContext provides localizedContext) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -568,6 +576,7 @@ fun RenameBottomSheet(
                     )
                 }
             }
+        }
         }
     }
 }

@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -34,6 +35,11 @@ fun ProfileScreen(
 ) {
     var isThemeSheetVisible by remember { mutableStateOf(false) }
     var isLanguageSheetVisible by remember { mutableStateOf(false) }
+
+    // ModalBottomSheet renders its content in a separate Popup that does not
+    // inherit the localized LocalContext override from MainActivity, so it
+    // must be re-provided explicitly here to keep the sheets translated.
+    val localizedContext = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -65,7 +71,7 @@ fun ProfileScreen(
             SettingsRow(
                 icon = R.drawable.language,
                 title = stringResource(R.string.language),
-                value = stringResource(if (currentLanguage == "en") R.string.english else R.string.ukrainian),
+                value = if (currentLanguage == "en") "English" else "Українська",
                 onClick = { isLanguageSheetVisible = true }
             )
         }
@@ -88,13 +94,15 @@ fun ProfileScreen(
             onDismissRequest = { isThemeSheetVisible = false },
             windowInsets = WindowInsets(0.dp, 0.dp, 0.dp, (-3).dp)
         ) {
-            ThemeBottomSheetContent(
-                currentTheme = currentTheme,
-                onThemeChange = {
-                    onThemeChange(it)
-                    isThemeSheetVisible = false
-                }
-            )
+            CompositionLocalProvider(LocalContext provides localizedContext) {
+                ThemeBottomSheetContent(
+                    currentTheme = currentTheme,
+                    onThemeChange = {
+                        onThemeChange(it)
+                        isThemeSheetVisible = false
+                    }
+                )
+            }
         }
     }
 
@@ -103,13 +111,15 @@ fun ProfileScreen(
             onDismissRequest = { isLanguageSheetVisible = false },
             windowInsets = WindowInsets(0.dp, 0.dp, 0.dp, (-3).dp)
         ) {
-            LanguageBottomSheetContent(
-                currentLanguage = currentLanguage,
-                onLanguageChange = {
-                    onLanguageChange(it)
-                    isLanguageSheetVisible = false
-                }
-            )
+            CompositionLocalProvider(LocalContext provides localizedContext) {
+                LanguageBottomSheetContent(
+                    currentLanguage = currentLanguage,
+                    onLanguageChange = {
+                        onLanguageChange(it)
+                        isLanguageSheetVisible = false
+                    }
+                )
+            }
         }
     }
 }
@@ -277,8 +287,8 @@ fun LanguageBottomSheetContent(
     onLanguageChange: (String) -> Unit
 ) {
     val languageOptions = listOf(
-        stringResource(R.string.ukrainian) to "uk",
-        stringResource(R.string.english) to "en",
+        "Українська" to "uk",
+        "English" to "en",
     )
 
     SelectableOptionsSheet(

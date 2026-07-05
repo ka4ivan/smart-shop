@@ -9,8 +9,6 @@
     <string name="dark_theme">Dark mode</string>
     <string name="light_theme">Light mode</string>
     <string name="language">Language</string>
-    <string name="ukrainian">Ukrainian</string>
-    <string name="english">English</string>
     <string name="app_version">App version %1$s</string>
     <string name="close">Close</string>
     <string name="on">On</string>
