@@ -122,6 +122,25 @@ class ListRepository {
         databaseListitems.child(listitemId).child("delete").setValue(false).await()
     }
 
+    suspend fun reassignListsOwner(oldUserId: String, newUserId: String) {
+        if (oldUserId == newUserId || oldUserId.isBlank()) return
+
+        try {
+            val snapshot = database
+                .orderByChild("userId")
+                .equalTo(oldUserId)
+                .get()
+                .await()
+
+            for (child in snapshot.children) {
+                val key = child.key ?: continue
+                database.child(key).child("userId").setValue(newUserId).await()
+            }
+        } catch (e: Exception) {
+            Log.e("ListRepository", "Failed to reassign lists from $oldUserId to $newUserId", e)
+        }
+    }
+
     suspend fun getAllLists(): List<ListData> {
         val snapshot = database.get().await()
         return snapshot.children.mapNotNull { it.getValue(ListData::class.java) }

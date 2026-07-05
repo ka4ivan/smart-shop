@@ -28,6 +28,7 @@ import com.smartshop.ui.screens.ListsScreen
 import com.smartshop.ui.screens.ProfileScreen
 import com.smartshop.ui.screens.TrashScreen
 import com.smartshop.ui.screens.WeatherScreen
+import com.smartshop.ui.viewmodel.AuthViewModel
 import com.smartshop.ui.viewmodel.ListViewModel
 import com.smartshop.ui.viewmodel.ListitemViewModel
 
@@ -158,11 +159,13 @@ fun Navigation(
             }
             composable(Screen.WeatherScreen.route) { WeatherScreen() }
             composable(Screen.ProfileScreen.route) {
+                val authViewModel: AuthViewModel = viewModel()
                 ProfileScreen(
                     currentTheme = currentTheme,
                     onThemeChange = onThemeChange,
                     currentLanguage = currentLanguage,
-                    onLanguageChange = onLanguageChange
+                    onLanguageChange = onLanguageChange,
+                    authViewModel = authViewModel
                 )
             }
             composable(Screen.TrashScreen.route) { backStackEntry ->

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "48080067875",
+    "firebase_url": "https://lntu-94305-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "lntu-94305",
     "storage_bucket": "lntu-94305.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.smartshop"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "48080067875-renvpiufsbr561bg32cdi7cjo2uk6vh0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.smartshop",
+            "certificate_hash": "e2fc9c3cc726f0e794c06a2c4ddbecab12192e5f"
+          }
+        },
+        {
+          "client_id": "48080067875-srtn5680rng3c0bshefjg3trctvkni62.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBkjoKxJKLnhUHFAewnd09snZSDMkygAh8"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "48080067875-srtn5680rng3c0bshefjg3trctvkni62.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

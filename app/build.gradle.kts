@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.firebase.database)
     implementation (libs.androidx.foundation)
     implementation (libs.firebase.database.ktx)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.play.services.auth)
     implementation (libs.androidx.runtime.livedata)
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.kotlinx.coroutines.play.services)

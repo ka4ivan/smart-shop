@@ -3,6 +3,7 @@ package com.smartshop
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.*
@@ -63,7 +64,21 @@ private fun LocalizedContent(language: String, content: @Composable () -> Unit) 
         baseContext.createConfigurationContext(configuration)
     }
 
-    CompositionLocalProvider(LocalContext provides localizedContext) {
+    // createConfigurationContext() returns a fresh Context that isn't a wrapper around
+    // the Activity, so LocalActivityResultRegistryOwner (which falls back to walking up
+    // the Context chain to find the Activity) can no longer find MainActivity once
+    // LocalContext is swapped below. Capture it here, before the swap, and re-provide it
+    // explicitly so rememberLauncherForActivityResult still works further down the tree.
+    val activityResultRegistryOwner = LocalActivityResultRegistryOwner.current
+
+    val providedValues = buildList<ProvidedValue<*>> {
+        add(LocalContext provides localizedContext)
+        if (activityResultRegistryOwner != null) {
+            add(LocalActivityResultRegistryOwner provides activityResultRegistryOwner)
+        }
+    }
+
+    CompositionLocalProvider(*providedValues.toTypedArray()) {
         content()
     }
 }

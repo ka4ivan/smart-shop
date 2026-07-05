@@ -48,6 +48,20 @@
     <string name="privacy_policy">Політика коефіденційності</string>
     <string name="terms_of_service">Умови надання послуг</string>
 
+    <string name="account">Акаунт</string>
+    <string name="sign_in">Увійти</string>
+    <string name="sign_up">Зареєструватися</string>
+    <string name="sign_out">Вийти</string>
+    <string name="email">Пошта</string>
+    <string name="password">Пароль</string>
+    <string name="continue_with_google">Продовжити з Google</string>
+    <string name="or">або</string>
+    <string name="no_account_register">Немає акаунту? Зареєструватися</string>
+    <string name="have_account_login">Вже маєте акаунт? Увійти</string>
+    <string name="sign_in_to_sync">Увійдіть, щоб синхронізувати списки на всіх пристроях</string>
+    <string name="not_signed_in">Гостьовий режим</string>
+    <string name="google_sign_in_unavailable">Вхід через Google тимчасово недоступний</string>
+
     <string name="confirm_delete">Підтвердьте видалення</string>
     <string name="confirm_delete_message">Ви впевнені, що хочете остаточно видалити цей список?</string>
     <string name="yes">Так</string>
