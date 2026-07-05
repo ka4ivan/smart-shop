@@ -25,7 +25,7 @@ class ListRepository {
 
             lists.filterNot { it.delete == true }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ListRepository", "Failed to load lists", e)
             emptyList()
         }
     }
@@ -45,7 +45,7 @@ class ListRepository {
 
             lists.filterNot { it.delete == false }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ListRepository", "Failed to load lists", e)
             emptyList()
         }
     }
@@ -67,7 +67,7 @@ class ListRepository {
 
             lists.filterNot { it.delete == true }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ListRepository", "Failed to load lists", e)
             emptyList()
         }
     }
@@ -89,7 +89,7 @@ class ListRepository {
             val snapshot = database.child(listId).get().await()
             snapshot.getValue(ListData::class.java) ?: ListData("", "", "", false, null, null)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ListRepository", "Failed to load list $listId", e)
             ListData("", "", "", false, null, null)
         }
     }
@@ -142,7 +142,7 @@ class ListRepository {
 
             lists.filterNot { it.delete == true }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ListRepository", "Failed to load listitems", e)
             emptyList()
         }
     }

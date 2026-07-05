@@ -115,33 +115,42 @@ fun Navigation(
                 ) + fadeOut(animationSpec = tween(225))
             }
         ) {
-            composable(Screen.ListsScreen.route) { ListsScreen(
-                navController = navController,
-                viewModel = ListViewModel(),
-            ) }
+            composable(Screen.ListsScreen.route) {
+                val listViewModel: ListViewModel = viewModel()
+                ListsScreen(
+                    navController = navController,
+                    viewModel = listViewModel,
+                )
+            }
             composable("list_screen/{listId}") { backStackEntry ->
                 val listId = backStackEntry.arguments?.getString("listId") ?: ""
+                val listViewModel: ListViewModel = viewModel()
                 ListScreen(
                     navController = navController,
-                    viewModel = ListViewModel(),
+                    viewModel = listViewModel,
                     listId = listId)
             }
             composable("listitem_screen/{listitemId}") { backStackEntry ->
                 val listitemId = backStackEntry.arguments?.getString("listitemId") ?: ""
+                val listitemViewModel: ListitemViewModel = viewModel()
                 ListitemScreen(
                     navController = navController,
-                    viewModel = ListitemViewModel(),
+                    viewModel = listitemViewModel,
                     listitemId = listitemId)
             }
-            composable(Screen.CreateListScreen.route) { CreateListScreen(
-                navController = navController,
-                viewModel = ListViewModel(),
-            ) }
+            composable(Screen.CreateListScreen.route) {
+                val listViewModel: ListViewModel = viewModel()
+                CreateListScreen(
+                    navController = navController,
+                    viewModel = listViewModel,
+                )
+            }
             composable(Screen.CreateListitemScreen.route) { backStackEntry ->
                 val listId = backStackEntry.arguments?.getString("listId") ?: ""
+                val listitemViewModel: ListitemViewModel = viewModel()
                 CreateListitemScreen(
                     navController = navController,
-                    viewModel = ListitemViewModel(),
+                    viewModel = listitemViewModel,
                     listId = listId,
                 )
             }

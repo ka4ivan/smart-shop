@@ -1,5 +1,6 @@
 package com.smartshop.data.repository
 
+import android.util.Log
 import com.google.firebase.database.FirebaseDatabase
 import com.smartshop.data.model.ListitemData
 import kotlinx.coroutines.tasks.await
@@ -53,7 +54,7 @@ class ListitemRepository {
 
             lists.filterNot { it.delete == true }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ListitemRepository", "Failed to load listitems for list $listId", e)
             emptyList()
         }
     }
@@ -85,7 +86,7 @@ class ListitemRepository {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ListitemRepository", "Failed to remove listitem $name from list $listId", e)
         }
     }
 
@@ -94,7 +95,7 @@ class ListitemRepository {
             val snapshot = database.child(listitemId).get().await()
             snapshot.getValue(ListitemData::class.java) ?: ListitemData("","", 1.0, "", false, false, "", null, null)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ListitemRepository", "Failed to load listitem $listitemId", e)
             ListitemData("","", 1.0, "", false, false, "", null, null)
         }
     }
